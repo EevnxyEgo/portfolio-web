@@ -1,0 +1,22 @@
+title: TensorFlow Developer Certificate
+issuer: Google
+date: "2024"
+expiryDate: ""
+credentialId: "TensorFlow-Dev-XXXXX"
+credentialUrl: "https://www.tensorflow.org/certificate"
+description: >
+  Certified TensorFlow Developer demonstrating proficiency in building
+  and training neural networks using TensorFlow. Covers deep learning
+  fundamentals, computer vision, natural language processing, and
+  time series forecasting.
+
+skills:
+  - TensorFlow
+  - Keras
+  - Deep Learning
+  - Neural Networks
+  - Computer Vision
+  - NLP
+
+category: ml-ai
+verified: true
