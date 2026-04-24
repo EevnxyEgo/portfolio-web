@@ -7,6 +7,7 @@ import {
   Bebas_Neue,
 } from "next/font/google";
 import "./globals.css";
+import { JsonLd } from "@/components/shared/JsonLd";
 
 const bebasNeue = Bebas_Neue({
   subsets: ["latin"],
@@ -112,7 +113,10 @@ export default function RootLayout({
       lang="en"
       className={`${bebasNeue.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable}`}
     >
-      <body className="min-h-screen flex flex-col antialiased">{children}</body>
+      <body className="min-h-screen flex flex-col antialiased">
+        <JsonLd />
+        {children}
+      </body>
     </html>
   );
 }

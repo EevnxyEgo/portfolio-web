@@ -48,7 +48,8 @@
       "mcp__plugin_playwright_playwright__browser_wait_for",
       "Bash(taskkill //F //IM node.exe)",
       "Bash(powershell *)",
-      "Bash(npx playwright *)"
+      "Bash(npx playwright *)",
+      "Bash(git push *)"
     ]
   }
 }
