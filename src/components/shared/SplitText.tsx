@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { Variants } from "framer-motion";
 
 interface SplitTextProps {
-  text: string;
+  text?: string;
   className?: string;
   element?: "h1" | "h2" | "h3" | "p" | "span" | "div";
   delay?: number;
@@ -13,7 +13,7 @@ interface SplitTextProps {
 }
 
 export function SplitText({
-  text,
+  text = "",
   className = "",
   element: Component = "div",
   delay = 0,

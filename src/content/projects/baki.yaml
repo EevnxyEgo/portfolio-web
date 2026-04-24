@@ -1,0 +1,53 @@
+title: BAKI
+tagline: "AI-powered fitness app that counts your reps in real time"
+category: ml-ai
+status: archived
+year: 2024
+type: group
+context: "Telematics Engineering Final Project — ITS Surabaya"
+role: "Machine Learning Developer"
+featured: true
+order: 1
+
+techStack:
+  - Kotlin
+  - TensorFlow
+  - OpenCV
+  - Python
+  - MLKit
+  - Android
+
+summary: >
+  BAKI is an AI-powered fitness application that helps users track and
+  improve their workouts more effectively. It leverages MLKit technology
+  to detect and count exercises such as push-ups, sit-ups, and lunges in
+  real time using only a smartphone camera. Acting as a smart RepCounter,
+  BAKI provides structured workout programs, reflex measurement, and
+  real-time feedback — making self-training more accessible and efficient.
+
+myRole: >
+  As the Machine Learning Developer, I designed, trained, and deployed
+  models for exercise detection and repetition counting. I handled data
+  collection, preprocessing, and model integration into the mobile app,
+  while collaborating with the Mobile App and Backend teams to ensure
+  seamless system integration.
+
+impact: >
+  My contribution enabled BAKI to perform real-time exercise detection
+  and repetition counting, helping users stay focused on their workout
+  instead of manual tracking. This innovation has the potential to
+  democratize structured fitness training by giving people access to
+  features usually only available through personal trainers.
+
+learnings: >
+  This project strengthened my expertise in pose detection, transfer
+  learning, and real-time ML integration into mobile platforms. More
+  importantly, I learned the value of cross-functional collaboration —
+  working with mobile and backend developers taught me that even
+  well-prepared technical solutions can face unexpected integration
+  challenges. Communication and adaptability are as crucial as
+  technical skills.
+
+links:
+  canva: ""
+  report: ""

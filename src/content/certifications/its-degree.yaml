@@ -1,0 +1,22 @@
+title: Computer Engineering Degree
+issuer: "Institut Teknologi Sepuluh Nopember (ITS) Surabaya"
+date: "2024"
+expiryDate: ""
+credentialId: "ITS-CPE-2024-XXXXX"
+credentialUrl: "https://www.its.ac.id"
+description: >
+  Bachelor of Computer Engineering degree from ITS Surabaya.
+  Specialized in systems engineering, embedded systems, and
+  creative technology. Final thesis: "360° Camera System with
+  Dynamic View Control for Digital Twin Concert in Unreal Engine 5."
+
+skills:
+  - C++
+  - Python
+  - Embedded Systems
+  - Computer Vision
+  - Unreal Engine 5
+  - Research
+
+category: academic
+verified: true

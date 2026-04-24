@@ -1,0 +1,50 @@
+title: 41-Card Game
+tagline: "Play cards with your webcam — real-time CNN card detection"
+category: cv
+status: archived
+year: 2023
+type: individual
+context: "Final Project — Computer Vision/Image Processing Course (PCV), ITS"
+role: "Sole Developer"
+featured: false
+order: 5
+
+techStack:
+  - Python
+  - TensorFlow
+  - Keras
+  - OpenCV
+  - CNN
+
+summary: >
+  The 41-Card Game integrates machine learning and computer vision to
+  create an interactive card game where physical playing cards are detected
+  and classified in real time. By combining Convolutional Neural Networks
+  with game logic, players can use actual physical cards while the
+  application processes inputs through a camera or webcam.
+
+myRole: >
+  As the sole developer, I designed and built the complete system. I
+  trained a CNN-based card detection model using TensorFlow/Keras and
+  OpenCV, created a custom dataset of 500+ images per card class, and
+  optimized the model for real-time classification. I also developed the
+  full game logic and user interface — ensuring smooth integration between
+  card recognition and gameplay.
+
+impact: >
+  This project demonstrated how deep learning can enhance traditional
+  gameplay by enabling physical card interaction with digital systems.
+  The real-time card detection showed strong performance, illustrating
+  the practical potential of AI in interactive applications.
+
+learnings: >
+  I gained hands-on experience in CNN design, dataset preparation, image
+  preprocessing, and real-time video processing. More importantly, it
+  taught me how to bring computer vision models into practical, interactive
+  applications — reinforcing my ability to translate ML theory into
+  innovative, working solutions.
+
+links:
+  github: ""
+  demo: ""
+  report: ""

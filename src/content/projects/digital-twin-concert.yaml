@@ -1,0 +1,54 @@
+title: Digital Twin Concert
+tagline: "360° dynamic camera system for a virtual music concert"
+category: 3d
+status: archived
+year: 2024
+type: individual
+context: "Undergraduate Thesis — Institut Teknologi Sepuluh Nopember (ITS) Surabaya"
+role: "Sole Researcher & Developer"
+featured: true
+order: 3
+
+techStack:
+  - "Unreal Engine 5"
+  - C++
+  - Blender
+  - MetaHuman
+  - Rokoko
+  - "Level Sequencer"
+
+summary: >
+  This project focused on developing an interactive 360° camera system
+  with dynamic view control for a digital twin of a live music concert
+  built in Unreal Engine 5. The system was designed to replicate real
+  concert experiences, enabling smooth camera transitions, immersive
+  perspectives, and cinematic storytelling in a virtual environment.
+
+myRole: >
+  As the sole researcher and developer, I built four types of cameras —
+  fixed, orbit, spectator, and cinematic — integrated into one unified
+  system. I implemented a Finite State Machine (FSM) for managing camera
+  states, applied interpolation techniques for smooth movements, and
+  created a real-time UI for seamless camera switching. I also designed
+  cinematic shots with Unreal Engine's Level Sequencer to replicate real
+  concert videography.
+
+impact: >
+  This project successfully delivered an interactive and intelligent
+  virtual camera system for digital twin concerts. It demonstrated how
+  engineering principles like FSM and interpolation can improve user
+  immersion and realism in virtual environments — with potential
+  applications in digital events, simulation, and virtual training
+  beyond entertainment.
+
+learnings: >
+  Through this thesis, I deepened my expertise in Unreal Engine 5, camera
+  system design, real-time rendering, and virtual environment interaction.
+  I also learned the importance of combining research, engineering, and
+  creative design to solve complex problems — approaching system
+  development from both technical and user-experience perspectives.
+
+links:
+  github: ""
+  demo: ""
+  report: ""
