@@ -37,7 +37,11 @@
       "Bash(npm ls *)",
       "mcp__filesystem__read_text_file",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(curl *)",
+      "mcp__plugin_playwright_playwright__browser_snapshot",
+      "mcp__plugin_playwright_playwright__browser_resize",
+      "Bash(git restore *)"
     ]
   }
 }

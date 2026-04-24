@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
@@ -20,34 +19,15 @@ const navLinks = [
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
+  const [mounted, setMounted] = useState(false);
   const { isMobile } = useMediaQuery();
-  const { scrollY, direction, isAtTop } = useScrollProgress();
 
+  // Required for hydration: server renders without client checks, then client updates once
   useEffect(() => {
-    if (isMobile) return;
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
+  }, []);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-50% 0px -50% 0px" }
-    );
-
-    navLinks.forEach((link) => {
-      const element = document.querySelector(link.href.replace("/#", "#"));
-      if (element) observer.observe(element);
-    });
-
-    return () => observer.disconnect();
-  }, [isMobile]);
-
-  const isScrolled = !isAtTop && scrollY > 80;
-  const isHidden = direction === "down" && scrollY > 200 && !isAtTop;
+  const isScrolled = mounted && window.scrollY > 80;
 
   return (
     <>
@@ -58,8 +38,6 @@ export function Navbar() {
             ? "bg-[var(--color-bg-overlay)]/80 backdrop-blur-xl border-b border-[var(--color-border)]"
             : "bg-transparent"
         )}
-        animate={{ y: isHidden ? -100 : 0 }}
-        transition={{ duration: 0.3 }}
       >
         <nav className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
@@ -79,20 +57,10 @@ export function Navbar() {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "relative font-heading text-sm transition-colors",
-                      activeSection === link.href.replace("/#", "")
-                        ? "text-[var(--color-text-primary)]"
-                        : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                      "relative font-heading text-sm transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
                     )}
                   >
                     {link.label}
-                    {activeSection === link.href.replace("/#", "") && (
-                      <motion.div
-                        layoutId="navbar-active"
-                        className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[var(--color-primary)]"
-                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                      />
-                    )}
                   </Link>
                 ))}
               </div>
@@ -100,11 +68,9 @@ export function Navbar() {
 
             {/* CTA Button */}
             <div className="flex items-center gap-4">
-              <Link href="/#contact">
-                <Button variant="primary" size="sm" magnetic>
-                  Hire Me
-                </Button>
-              </Link>
+              <Button variant="primary" size="sm" magnetic>
+                <Link href="/#contact">Hire Me</Link>
+              </Button>
 
               {/* Mobile Menu Toggle */}
               {isMobile && (
