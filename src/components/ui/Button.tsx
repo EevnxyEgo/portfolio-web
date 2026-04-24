@@ -1,8 +1,8 @@
 "use client";
 
 import { forwardRef } from "react";
+import Link from "next/link";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils";
 import { MagneticElement } from "@/components/shared/MagneticElement";
 
 const buttonVariants = cva(
@@ -59,6 +59,8 @@ export interface ButtonProps
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  href?: string;
+  asChild?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -73,17 +75,16 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       rightIcon,
       children,
       disabled,
+      href,
+      asChild = false,
       ...props
     },
     ref
   ) => {
-    const buttonContent = (
-      <button
-        ref={ref}
-        className={cn(buttonVariants({ variant, size, className }))}
-        disabled={disabled || isLoading}
-        {...props}
-      >
+    const baseClasses = buttonVariants({ variant, size, className });
+
+    const content = (
+      <>
         {isLoading ? (
           <>
             <svg
@@ -115,18 +116,36 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             {rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
           </>
         )}
+      </>
+    );
+
+    const buttonElement = asChild ? (
+      <Link
+        href={href || "#"}
+        className={baseClasses}
+      >
+        {content}
+      </Link>
+    ) : (
+      <button
+        ref={ref}
+        className={baseClasses}
+        disabled={disabled || isLoading}
+        {...props}
+      >
+        {content}
       </button>
     );
 
-    if (magnetic) {
+    if (magnetic && !asChild) {
       return (
         <MagneticElement strength={0.2}>
-          {buttonContent}
+          {buttonElement}
         </MagneticElement>
       );
     }
 
-    return buttonContent;
+    return buttonElement;
   }
 );
 

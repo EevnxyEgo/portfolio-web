@@ -22,7 +22,6 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false);
   const { isMobile } = useMediaQuery();
 
-  // Required for hydration: server renders without client checks, then client updates once
   useEffect(() => {
     setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
   }, []);
@@ -66,13 +65,12 @@ export function Navbar() {
               </div>
             )}
 
-            {/* CTA Button */}
+            {/* Right side: CTA + Mobile Menu */}
             <div className="flex items-center gap-4">
-              <Button variant="primary" size="sm" magnetic>
-                <Link href="/#contact">Hire Me</Link>
+              <Button variant="primary" size="sm" magnetic asChild href="/#contact">
+                Hire Me
               </Button>
 
-              {/* Mobile Menu Toggle */}
               {isMobile && (
                 <button
                   onClick={() => setIsOpen(!isOpen)}

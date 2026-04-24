@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ArrowDown, Download, Mail } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
@@ -122,9 +121,11 @@ export function HeroSection() {
                 variant="primary"
                 size="lg"
                 magnetic
+                asChild
+                href="/#projects"
                 rightIcon={<ArrowDown size={18} />}
               >
-                <Link href="/#projects">View My Work</Link>
+                View My Work
               </Button>
               <Button
                 variant="secondary"
