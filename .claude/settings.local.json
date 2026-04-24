@@ -41,7 +41,14 @@
       "Bash(curl *)",
       "mcp__plugin_playwright_playwright__browser_snapshot",
       "mcp__plugin_playwright_playwright__browser_resize",
-      "Bash(git restore *)"
+      "Bash(git restore *)",
+      "mcp__filesystem__read_file",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(rm -rf .next)",
+      "mcp__plugin_playwright_playwright__browser_wait_for",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(powershell *)",
+      "Bash(npx playwright *)"
     ]
   }
 }

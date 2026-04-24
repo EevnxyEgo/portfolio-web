@@ -12,6 +12,9 @@
 
 # testing
 /coverage
+.playwright-mcp/
+*.png
+*.log
 
 # next.js
 /.next/
