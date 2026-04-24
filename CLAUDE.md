@@ -199,28 +199,43 @@ Routes/Pages  : lowercase (Next.js)    → page.tsx
 
 ## 🔀 GIT WORKFLOW
 
-After each Phase is fully complete and validated (tsc + lint + build all pass):
-1. `git add .`
-2. `git commit -m "phase X: [brief description of what was built]"`
-3. `git push origin main`
+After each Phase is complete:
+
+**STEP 1 — VALIDATE (fix all issues before proceeding to commit)**
+```bash
+npx tsc --noEmit          → must show 0 errors
+npm run lint               → must be clean
+npm run build              → must succeed
+npm run dev (background)   → start dev server
+Use Playwright MCP to screenshot http://localhost:3000
+Kill dev server after screenshot
+```
+
+**STEP 2 — COMMIT (only if all validations pass)**
+```bash
+git add .
+git commit -m "phase X: [description]"
+Report: what was committed + screenshot result
+```
+
+**NEVER commit if there are TypeScript errors, lint errors, or build failures.**
+Fix first, then commit.
 
 **Commit message format:**
-- phase 1: foundation — next.js scaffold, design tokens, types, hooks
-- phase 2: shared components — cursor, noise, splittext, magnetic, ui primitives
-- phase 3: layout layer — navbar, footer, loading screen, page transitions
-- phase 4: homepage sections — hero, about, skills, projects, experience, certs, contact
-- phase 5: detail pages — project slug, certifications, about, contact pages
-- phase 6: cms & content — keystatic config, all 5 project yaml files populated
-- phase 7: 3d & polish — particle field, micro-interactions, reduced motion
-- phase 8: seo & performance — sitemap, og image, lighthouse fixes
-- phase 9: deployment — dockerfile, nginx config, github actions ci/cd
+- "phase 1: foundation — scaffold, design tokens, types, hooks"
+- "phase 2: shared components — cursor, noise, splittext, magnetic, ui"
+- "phase 3: layout — navbar, footer, loading screen, page transitions"
+- "phase 4: homepage — hero, about, skills, projects, experience, certs, contact"
+- "phase 5: detail pages — project slug, certifications, about, contact"
+- "phase 6: cms & content — keystatic config, 5 project yaml files"
+- "phase 7: 3d & polish — particles, micro-interactions, reduced motion"
+- "phase 8: seo & performance — sitemap, og image, lighthouse 95+"
+- "phase 9: deployment — dockerfile, nginx, github actions"
 
 **Never commit:**
 - `.env.production` (only `.env.production.example`)
 - `node_modules`
 - `.next` folder
-
-Always make sure `.gitignore` covers these before first commit.
 
 ---
 
