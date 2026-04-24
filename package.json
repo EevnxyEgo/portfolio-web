@@ -1,7 +1,8 @@
 {
-  "name": "portfolio-temp",
+  "name": "arsenius-portfolio",
   "version": "0.1.0",
   "private": true,
+  "description": "Portfolio of Arsenius Audley Wahyu Djatmiko - Fullstack Developer & ML Engineer",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,9 +10,28 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@fontsource/dm-sans": "^5.2.8",
+    "@fontsource/instrument-serif": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/space-grotesk": "^5.2.10",
+    "@hookform/resolvers": "^5.2.2",
+    "@keystatic/core": "^0.5.50",
+    "@keystatic/next": "^5.0.4",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^1.9.0",
     "next": "16.2.4",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-hook-form": "^7.73.1",
+    "react-icons": "^5.6.0",
+    "resend": "^6.12.2",
+    "tailwind-merge": "^3.5.0",
+    "three": "^0.184.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

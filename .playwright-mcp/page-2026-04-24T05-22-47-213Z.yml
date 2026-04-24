@@ -1,0 +1,9 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e4]:
+      - heading "ARSENIUS AUDLEY" [level=1] [ref=e5]:
+        - text: ARSENIUS
+        - text: AUDLEY
+      - paragraph [ref=e6]: Fullstack Developer × ML Engineer
+  - button "Open Next.js Dev Tools" [ref=e12] [cursor=pointer]:
+    - img [ref=e13]
