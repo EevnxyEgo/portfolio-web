@@ -1,10 +1,9 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { useMousePosition } from "@/hooks/useMousePosition";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { lerpFactor, magneticStrength } from "@/lib/animations";
 
 interface MagneticElementProps {
@@ -20,15 +19,21 @@ export function MagneticElement({
   strength = magneticStrength,
   disabled = false,
 }: MagneticElementProps) {
-  const { isMobile } = useMediaQuery();
-  const prefersReduced = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
   const { x, y } = useMousePosition();
   const containerRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<number | undefined>(undefined);
   const currentX = useRef(0);
   const currentY = useRef(0);
+  const isMobile = mounted && typeof window !== "undefined" && window.innerWidth < 768;
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || isMobile || disabled) return;
+
     const animate = () => {
       if (!containerRef.current) return;
 
@@ -51,7 +56,6 @@ export function MagneticElement({
     };
 
     const handleMouseEnter = () => {
-      if (isMobile || prefersReduced || disabled) return;
       frameRef.current = requestAnimationFrame(animate);
     };
 
@@ -81,14 +85,19 @@ export function MagneticElement({
         element.removeEventListener("mouseleave", handleMouseLeave);
       }
     };
-  }, [x, y, strength, isMobile, prefersReduced, disabled]);
+  }, [x, y, strength, isMobile, disabled, mounted]);
+
+  // Don't render magnetic wrapper until mounted to avoid hydration mismatch
+  if (!mounted) {
+    return <>{children}</>;
+  }
 
   return (
     <motion.div
       ref={containerRef}
       className={`inline-block ${className}`}
-      whileHover={prefersReduced || isMobile || disabled ? {} : { scale: 1.05 }}
-      whileTap={prefersReduced || isMobile || disabled ? {} : { scale: 0.98 }}
+      whileHover={isMobile || disabled ? {} : { scale: 1.05 }}
+      whileTap={isMobile || disabled ? {} : { scale: 0.98 }}
       transition={{ duration: 0.2 }}
     >
       {children}

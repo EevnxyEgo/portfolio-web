@@ -2,30 +2,8 @@
 
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import { Mail, Download } from "lucide-react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { Download } from "lucide-react";
 import { Button } from "@/components/ui";
-import { cn } from "@/lib/utils";
-import { siteConfig } from "@/lib/metadata";
-
-const socialLinks = [
-  { href: siteConfig.links.github, icon: FaGithub, label: "GitHub" },
-  { href: siteConfig.links.linkedin, icon: FaLinkedin, label: "LinkedIn" },
-  { href: `mailto:${siteConfig.links.email}`, icon: Mail, label: "Email" },
-];
-
-const stats = [
-  { value: "5+", label: "Projects Built" },
-  { value: "3", label: "ML Models Deployed" },
-  { value: "2", label: "Platforms" },
-  { value: "1", label: "Undergraduate Thesis" },
-];
-
-const bioParagraphs = [
-  "I'm a Computer Engineering graduate from ITS Surabaya — where I learned that the most interesting problems live at the boundary between disciplines. I build things that are smart: web apps with AI at their core, ML models that run in the real world, and systems that feel alive.",
-  "From real-time exercise detection on mobile to voice-powered AI fitness trainers and dynamic camera systems in Unreal Engine 5 — my projects share one common thread: I don't stop until the idea actually works.",
-  "As a Google Bangkit Academy Machine Learning alumnus, I was trained to ship AI solutions at scale — combining research rigor with the speed of a startup engineer.",
-];
 
 export function AboutSection() {
   const prefersReduced = useReducedMotion();
@@ -36,6 +14,20 @@ export function AboutSection() {
       className="relative py-[clamp(5rem,10vw,8rem)] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        {/* Pull quote — the human hook */}
+        <motion.div
+          initial={prefersReduced ? false : { opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7 }}
+          className="max-w-3xl mx-auto text-center mb-16"
+        >
+          <blockquote className="pull-quote">
+            &ldquo;I don&apos;t stop until the idea actually works.&rdquo;
+          </blockquote>
+        </motion.div>
+
+        {/* Main content */}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Image column */}
           <motion.div
@@ -92,52 +84,65 @@ export function AboutSection() {
               </h2>
             </motion.div>
 
-            {/* Bio paragraphs */}
-            <div className="space-y-4">
-              {bioParagraphs.map((paragraph, index) => (
-                <motion.p
-                  key={index}
-                  initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-80px" }}
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.1 + index * 0.1,
-                  }}
-                  className="text-[var(--color-text-secondary)] text-body-lg leading-relaxed"
-                >
-                  {paragraph}
-                </motion.p>
-              ))}
-            </div>
+            {/* Flowing bio text */}
+            <motion.div
+              initial={prefersReduced ? false : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="space-y-5"
+            >
+              <p className="text-[var(--color-text-secondary)] text-body-lg leading-relaxed">
+                Computer Engineering graduate from{" "}
+                <span className="font-heading font-semibold text-[var(--color-text-primary)]">
+                  ITS Surabaya
+                </span>{" "}
+                — where I learned that the most interesting problems live at the
+                boundary between disciplines. I build things that are smart: web
+                apps with AI at their core, ML models that run in the real world,
+                and systems that feel alive.
+              </p>
 
-            {/* Stats */}
+              <p className="text-[var(--color-text-secondary)] text-body-lg leading-relaxed">
+                From real-time exercise detection on mobile to voice-powered AI
+                fitness trainers and dynamic camera systems in{" "}
+                <span className="font-heading font-semibold text-[var(--color-text-primary)]">
+                  Unreal Engine 5
+                </span>{" "}
+                — my projects share one common thread.
+              </p>
+
+              <p className="text-[var(--color-text-secondary)] text-body-lg leading-relaxed">
+                As a{" "}
+                <span className="tag tag-primary text-xs font-mono">Google Bangkit</span>
+                {" "}
+                Machine Learning alumnus, I was trained to ship AI solutions at
+                scale — combining research rigor with the speed of a startup engineer.
+              </p>
+            </motion.div>
+
+            {/* Inline stats */}
             <motion.div
               initial={prefersReduced ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-6 border-y border-[var(--color-border)]"
+              className="flex flex-wrap gap-4 py-6 border-y border-[var(--color-border)]"
             >
-              {stats.map((stat, index) => (
-                <div key={index} className="text-center">
-                  <motion.div
-                    initial={prefersReduced ? false : { opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.4 + index * 0.1,
-                    }}
-                    className="font-display text-[clamp(2rem,4vw,3rem)] text-[var(--color-primary)]"
-                  >
-                    {stat.value}
-                  </motion.div>
-                  <div className="text-sm text-[var(--color-text-tertiary)] font-mono uppercase tracking-wider">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
+              <div className="flex items-baseline gap-2">
+                <span className="font-display text-4xl text-[var(--color-primary)]">5+</span>
+                <span className="text-[var(--color-text-secondary)] text-sm">projects built</span>
+              </div>
+              <span className="text-[var(--color-text-tertiary)]">·</span>
+              <div className="flex items-baseline gap-2">
+                <span className="font-display text-4xl text-[var(--color-accent)]">3</span>
+                <span className="text-[var(--color-text-secondary)] text-sm">ML models deployed</span>
+              </div>
+              <span className="text-[var(--color-text-tertiary)]">·</span>
+              <div className="flex items-baseline gap-2">
+                <span className="font-display text-4xl text-[var(--color-sage)]">1</span>
+                <span className="text-[var(--color-text-secondary)] text-sm">undergrad thesis</span>
+              </div>
             </motion.div>
 
             {/* CTA */}
@@ -146,7 +151,6 @@ export function AboutSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: 0.5 }}
-              className="flex flex-wrap items-center gap-4"
             >
               <Button
                 variant="primary"
@@ -156,24 +160,6 @@ export function AboutSection() {
               >
                 Download CV
               </Button>
-
-              <div className="flex items-center gap-4">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.href}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={cn(
-                      "p-2 text-[var(--color-text-secondary)] transition-colors",
-                      "hover:text-[var(--color-primary)]"
-                    )}
-                    aria-label={social.label}
-                  >
-                    <social.icon size={20} />
-                  </a>
-                ))}
-              </div>
             </motion.div>
           </div>
         </div>

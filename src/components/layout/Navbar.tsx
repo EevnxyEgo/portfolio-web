@@ -80,7 +80,7 @@ export function Navbar() {
                   "cursor-pointer"
                 )}
               >
-                Hire Me
+                Let&apos;s talk →
               </Link>
 
               {/* Mobile Menu Toggle */}

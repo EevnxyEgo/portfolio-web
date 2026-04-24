@@ -1,4 +1,4 @@
-# DESIGN SYSTEM — Electric Brutalism
+# DESIGN SYSTEM — Human-Centered Electric Brutalism
 > Referensi lengkap untuk semua keputusan visual dan motion di portfolio ini.
 > Dibaca Claude Code saat mengerjakan komponen UI, animasi, atau styling.
 
@@ -6,21 +6,33 @@
 
 ## 🎯 KONSEP VISUAL
 
-**Nama:** Electric Brutalism
+**Nama:** Human-Centered Electric Brutalism
 
-**Filosofi:** Portfolio ini harus terasa seperti persilangan antara **Linear.app**
-(precision engineering, dark, confident) dan **sebuah majalah desain Jepang yang
-dicetak di atas kertas newsprint** (bold type, expressive layout, unapologetic).
-Bukan template. Bukan Bootstrap clone. Ini harus terasa *dibangun oleh seseorang
-yang benar-benar tahu apa yang dia lakukan*.
+**Filosofi:** Portfolio ini harus terasa seperti **personality-driven editorial design**
+yang dicetak di atas kertas — bold, direct, human. Menghapus estetika "AI startup"
+yang generic (partikel neural network, wireframe 3D, cyan everywhere) dan menggantinya
+dengan geometric shapes yang intentional dan typography yang powerful.
 
-**Kata kunci:** Dark. Bold. Intelligent. Intentional. Unforgettable.
+**Kata kunci:** Dark. Bold. Human. Personality. Editorial.
+
+**Apa yang DIHAPUS:**
+- ParticleField dan FloatingGeometry dari hero (too "AI startup")
+- Noise overlay yang generic
+- Cyan accent yang overuse (#00D4FF everywhere)
+- Subtle gradient backgrounds
+
+**Apa yang DIAKTBATKAN:**
+- Bold CSS geometric shapes (triangles, lines) sebagai visual anchor
+- Strong typography hierarchy dengan Bebas Neue
+- Red #E8330A sebagai dominant accent, bukan cyan
+- Editorial-style section markers (01, 02, 03)
+- Asymmetric layouts dengan personality
 
 **Inspirasi referensi:**
-- Linear.app — precision + dark theme
-- Vercel.com — confident typography + negative space
-- Awwwards SOTD winners — unexpected layout, motion
-- Refactoring UI principles — hierarchy tanpa dekorasi berlebihan
+- ilithya.io — bold geometric, personality-driven
+- offmenu.studio — editorial brutalism, color blocking
+- Awwwards SOTD winners — unexpected layout, typography
+- Magazine layouts — bold type, asymmetric grids, personality
 
 ---
 
@@ -419,21 +431,11 @@ Hide default cursor: cursor: none on body
 Show only on desktop (useMediaQuery > 768px)
 ```
 
-### NoiseOverlay (shared/NoiseOverlay.tsx)
+### NoiseOverlay (REMOVED)
 ```
-Implementation: SVG feTurbulence filter over full viewport
-Opacity: 0.035 (very subtle)
-Position: fixed, z-index: var(--z-overlay), pointer-events: none
-Blend mode: overlay
-
-SVG:
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-  <filter id="noise">
-    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
-    <feColorMatrix type="saturate" values="0"/>
-  </filter>
-  <rect width="100%" height="100%" filter="url(#noise)" opacity="0.035"/>
-</svg>
+Note: NoiseOverlay has been removed from the design.
+Rationale: Subtle film grain effects felt generic and "AI startup aesthetic".
+The design now relies on bold typography and geometric shapes for visual interest.
 ```
 
 ---
@@ -474,33 +476,36 @@ Experience: single column timeline, max-width 700px, centered
 ### Hero Section
 ```
 Layout: full-viewport-height, flex, items-center
-  Desktop: split — 55% text left, 45% visual right
-  Mobile: stack — visual above text, or text only with bg visual
+  Desktop: asymmetric grid — 70% text left, 30% info card right
+  Mobile: stack — text with geometric shapes as background
 
 Text column:
-  [Label]     : Instrument Serif italic, 0.9rem, --color-accent, letter-spacing 0.08em
-                Text: "FULLSTACK DEVELOPER × ML ENGINEER"
-  [Name]      : Bebas Neue, clamp(5rem, 10vw, 9rem), line-height 0.9
-                "ARSENIUS\nAUDLEY" — two lines
-  [Tagline]   : DM Sans, 1.1rem, --color-text-secondary, max-width 460px
-                "Building intelligent systems at the intersection of
-                 web, AI, and immersive technology."
-  [CTAs]      : flex gap-4
-                Primary: "View My Work" → #projects
-                Secondary: "Download CV" → /cv.pdf
-  [Socials]   : GitHub | LinkedIn | Email — icon only, 20px, gap-5
+  [Section Marker] : "Portfolio" — JetBrains Mono, section-marker style
+  [Name]           : Bebas Neue, clamp(4.5rem, 12vw, 10rem), line-height 0.88
+                     "ARSENIUS" (white) + "AUDLEY" (red #E8330A) — two lines
+  [Tagline]         : Instrument Serif italic, 1.25rem, --color-text-secondary
+                     "Fullstack Developer & ML Engineer"
+  [Divider]        : ed-line class — gradient line red → transparent
+  [Description]    : DM Sans, 1.1rem, --color-text-secondary, max-width 460px
+  [CTAs]           : flex gap-4
+                     Primary: "View My Work" → #projects
+                     Secondary: "Download CV" → /cv.pdf
+  [Socials]        : GitHub | LinkedIn | Email — icon only, 20px, gap-5
 
-Visual column:
-  Option A: R3F scene — rotating icosahedron + torus, wireframe style,
-            responsive to mouse position, #E8330A lines
-  Option B: CSS art — large circle gradient (#E8330A → transparent),
-            Arsenius photo with desaturate → color-on-hover,
-            overlapping geometric shapes
+Info card (right side desktop only):
+  ed-box class — border with corner accent
+  Content: "Based in Surabaya, Indonesia" + availability status
+
+Geometric elements (CSS-based):
+  - Large red triangle (#E8330A) — top right, 600-800px
+  - Cyan accent line — diagonal, subtle
+  - Small red square — bottom left accent
+  - Angular shape — secondary geometric
 
 Background:
-  var(--gradient-hero) — radial glow from top
-  NoiseOverlay active
-  Subtle animated grid pattern (CSS, very faint)
+  Solid #080808 (no gradients)
+  NO 3D effects (ParticleField, FloatingGeometry removed)
+  NO NoiseOverlay
 ```
 
 ### Skills Section

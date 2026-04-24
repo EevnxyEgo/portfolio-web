@@ -105,10 +105,10 @@ export function Footer() {
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-[var(--color-text-tertiary)]">
-            © {currentYear} Arsenius Audley Wahyu Djatmiko. All rights reserved.
+            © {currentYear} Arsenius Audley Wahyu Djatmiko
           </p>
-          <p className="text-sm text-[var(--color-text-tertiary)]">
-            Built with Next.js, Tailwind CSS, and Framer Motion
+          <p className="text-sm text-[var(--color-text-tertiary)] italic font-accent">
+            Crafted with care in Surabaya
           </p>
         </div>
       </div>

@@ -8,19 +8,27 @@ interface LoadingScreenProps {
 }
 
 export function LoadingScreen({ onComplete }: LoadingScreenProps) {
+  const [mounted, setMounted] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           return 100;
         }
-        return prev + Math.random() * 15 + 5;
+        // Use deterministic increments for hydration
+        return prev + 12;
       });
-    }, 100);
+    }, 150);
 
     const timer = setTimeout(() => {
       setIsComplete(true);
@@ -33,7 +41,14 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       clearInterval(interval);
       clearTimeout(timer);
     };
-  }, [onComplete]);
+  }, [mounted, onComplete]);
+
+  // Don't render on server
+  if (!mounted) {
+    return (
+      <div className="fixed inset-0 z-[var(--z-modal)] bg-[var(--color-bg)]" />
+    );
+  }
 
   return (
     <AnimatePresence>

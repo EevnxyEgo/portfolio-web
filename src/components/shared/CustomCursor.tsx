@@ -2,18 +2,24 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useMousePosition } from "@/hooks/useMousePosition";
 
 export function CustomCursor() {
-  const { isMobile } = useMediaQuery();
   const { x, y } = useMousePosition();
   const cursorRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
 
   useEffect(() => {
-    if (isMobile) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    // Only run on desktop
+    if (window.innerWidth < 768) return;
 
     const handleHover = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -37,9 +43,10 @@ export function CustomCursor() {
       document.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isMobile]);
+  }, [mounted]);
 
-  if (isMobile) return null;
+  // Don't render on server or mobile
+  if (!mounted) return null;
 
   return (
     <>

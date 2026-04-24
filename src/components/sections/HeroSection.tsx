@@ -67,7 +67,7 @@ export function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <span className="font-accent text-accent text-sm tracking-[0.08em] uppercase">
+              <span className="font-accent text-accent text-base tracking-[0.04em] italic">
                 Fullstack Developer × ML Engineer
               </span>
             </motion.div>
@@ -78,7 +78,7 @@ export function HeroSection() {
                 <h1 className="text-hero font-display leading-[0.9]">
                   ARSENIUS
                   <br />
-                  AUDLEY
+                  <span className="pl-[clamp(2rem,4vw,4rem)]">AUDLEY</span>
                 </h1>
               ) : (
                 <SplitText
@@ -90,10 +90,10 @@ export function HeroSection() {
                 />
               )}
             </div>
-            <div className="overflow-hidden -mt-2">
+            <div className="overflow-hidden -mt-2 handwritten-underline">
               {prefersReduced ? (
                 <h1 className="text-hero font-display leading-[0.9]">
-                  AUDLEY
+                  <span className="pl-[clamp(2rem,4vw,4rem)]">AUDLEY</span>
                 </h1>
               ) : (
                 <SplitText
@@ -111,10 +111,10 @@ export function HeroSection() {
               initial={prefersReduced ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.9 }}
-              className="text-lg text-[var(--color-text-secondary)] max-w-md font-body"
+              className="text-lg text-[var(--color-text-secondary)] max-w-md font-body leading-relaxed"
             >
               Building intelligent systems at the intersection of web, AI, and
-              immersive technology.
+              immersive technology — based in Surabaya.
             </motion.p>
 
             {/* CTAs */}

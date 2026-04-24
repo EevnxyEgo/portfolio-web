@@ -1,11 +1,15 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 export function ScrollProgress() {
-  const { isMobile } = useMediaQuery();
+  const [mounted, setMounted] = useState(false);
   const { scrollYProgress } = useScroll();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -13,7 +17,7 @@ export function ScrollProgress() {
     restDelta: 0.001,
   });
 
-  if (isMobile) return null;
+  if (!mounted) return null;
 
   return (
     <motion.div

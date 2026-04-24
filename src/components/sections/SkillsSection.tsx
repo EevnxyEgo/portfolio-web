@@ -2,86 +2,48 @@
 
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import { Badge } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 const skillCategories = [
   {
     name: "Frontend",
-    color: "primary" as const,
+    tagClass: "tag-primary",
     skills: [
-      "React",
-      "Next.js",
-      "TypeScript",
-      "JavaScript (ES2022+)",
-      "HTML5 / CSS3",
-      "Tailwind CSS",
-      "shadcn-ui",
-      "Bootstrap",
-      "Framer Motion",
+      "React", "Next.js", "TypeScript", "JavaScript", "HTML/CSS",
+      "Tailwind CSS", "shadcn-ui", "Framer Motion",
     ],
   },
   {
     name: "Backend",
-    color: "accent" as const,
+    tagClass: "tag-warm",
     skills: [
-      "Express.js",
-      "Node.js",
-      "Python",
-      "REST APIs",
-      "Convex",
-      "Clerk (Auth)",
+      "Express.js", "Node.js", "Python", "REST APIs",
+      "Convex", "Clerk Auth",
     ],
   },
   {
-    name: "AI / Machine Learning",
-    color: "accent" as const,
+    name: "AI / ML",
+    tagClass: "tag-cool",
     skills: [
-      "TensorFlow / Keras",
-      "scikit-learn",
-      "OpenCV",
-      "MLKit",
-      "TensorFlow Recommenders",
-      "Gemini API",
-      "vapi.ai (Voice AI)",
-      "Pose Detection",
-      "Transfer Learning",
-      "CNN",
-      "Recommendation Systems",
-      "NLP (basics)",
+      "TensorFlow", "Keras", "scikit-learn", "OpenCV", "MLKit",
+      "TensorFlow Recommenders", "Gemini API", "vapi.ai",
+      "Pose Detection", "CNN", "NLP",
     ],
   },
   {
-    name: "Mobile & Cross-platform",
-    color: "default" as const,
-    skills: ["Kotlin (Android)", "Android Development"],
-  },
-  {
-    name: "3D & Creative Tech",
-    color: "primary" as const,
+    name: "3D & Creative",
+    tagClass: "tag-sage",
     skills: [
-      "Unreal Engine 5",
-      "Blender",
-      "MetaHuman",
-      "Rokoko (Motion Capture)",
-      "React Three Fiber",
-      "Three.js",
+      "Unreal Engine 5", "Blender", "MetaHuman",
+      "React Three Fiber", "Three.js",
     ],
   },
   {
-    name: "Tools & DevOps",
-    color: "default" as const,
+    name: "Tools",
+    tagClass: "tag",
     skills: [
-      "Git / GitHub",
-      "Docker",
-      "Nginx",
-      "Linux (Ubuntu)",
-      "Vercel",
-      "Google Cloud Platform",
-      "Jupyter Notebook",
-      "Google Colab",
-      "Figma",
-      "VS Code",
+      "Git", "Docker", "Nginx", "Linux", "Vercel",
+      "GCP", "Figma", "VS Code",
     ],
   },
 ];
@@ -114,53 +76,56 @@ export function SkillsSection() {
           </p>
         </motion.div>
 
-        {/* Skills grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {skillCategories.map((category, categoryIndex) => (
-            <motion.div
-              key={category.name}
-              initial={prefersReduced ? false : { opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{
-                duration: 0.5,
-                delay: categoryIndex * 0.1,
-              }}
-              className={cn(
-                "p-6 rounded-lg border border-[var(--color-border)]",
-                "bg-[var(--color-bg)] hover:border-[var(--color-border-bright)]",
-                "transition-all duration-300"
-              )}
-            >
-              <h3
-                className={cn(
-                  "font-heading text-lg mb-4 pb-3 border-b border-[var(--color-border)]",
-                  category.color === "primary" && "text-[var(--color-primary)]",
-                  category.color === "accent" && "text-[var(--color-accent)]",
-                  category.color === "default" && "text-[var(--color-text-primary)]"
-                )}
+        {/* Flowing tag cloud */}
+        <motion.div
+          initial={prefersReduced ? false : { opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-wrap gap-3 justify-center max-w-4xl mx-auto"
+        >
+          {skillCategories.map((category, categoryIndex) =>
+            category.skills.map((skill, skillIndex) => (
+              <motion.div
+                key={skill}
+                initial={prefersReduced ? false : { opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.3,
+                  delay: (categoryIndex * 0.1) + (skillIndex * 0.03),
+                }}
               >
+                <span className={category.tagClass}>{skill}</span>
+              </motion.div>
+            ))
+          )}
+        </motion.div>
+
+        {/* Category labels below */}
+        <motion.div
+          initial={prefersReduced ? false : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="flex flex-wrap justify-center gap-8 mt-12 pt-8 border-t border-[var(--color-border)]"
+        >
+          {skillCategories.map((category) => (
+            <div key={category.name} className="flex items-center gap-2">
+              <div className={cn(
+                "w-3 h-3 rounded-full",
+                category.tagClass === "tag-primary" && "bg-[var(--color-primary)]",
+                category.tagClass === "tag-warm" && "bg-[var(--color-warm)]",
+                category.tagClass === "tag-cool" && "bg-[var(--color-cool)]",
+                category.tagClass === "tag-sage" && "bg-[var(--color-sage)]",
+                category.tagClass === "tag" && "bg-[var(--color-text-tertiary)]",
+              )} />
+              <span className="font-heading text-sm text-[var(--color-text-secondary)]">
                 {category.name}
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {category.skills.map((skill, skillIndex) => (
-                  <motion.div
-                    key={skill}
-                    initial={prefersReduced ? false : { opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 0.3,
-                      delay: categoryIndex * 0.1 + skillIndex * 0.05,
-                    }}
-                  >
-                    <Badge variant={category.color}>{skill}</Badge>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
+              </span>
+            </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
