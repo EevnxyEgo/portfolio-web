@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -20,11 +18,13 @@ const navLinks = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { isMobile } = useMediaQuery();
 
   useEffect(() => {
-    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
+    setMounted(true);
   }, []);
+
+  // Use client-side check for mobile detection
+  const isMobile = mounted && window.innerWidth < 768;
 
   const isScrolled = mounted && window.scrollY > 80;
 
@@ -48,7 +48,7 @@ export function Navbar() {
               A.
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Nav - shown when not mobile (client only) */}
             {!isMobile && (
               <div className="flex items-center gap-8">
                 {navLinks.map((link) => (
@@ -67,10 +67,23 @@ export function Navbar() {
 
             {/* Right side: CTA + Mobile Menu */}
             <div className="flex items-center gap-4">
-              <Button variant="primary" size="sm" magnetic asChild href="/#contact">
+              <Link
+                href="/#contact"
+                className={cn(
+                  "inline-flex items-center justify-center gap-2",
+                  "font-heading font-medium text-sm",
+                  "h-9 px-4 rounded-[var(--radius-md)]",
+                  "bg-[var(--color-primary)] text-white",
+                  "hover:bg-[var(--color-primary-glow)] hover:shadow-[var(--shadow-glow)]",
+                  "active:bg-[var(--color-primary-dark)]",
+                  "transition-all duration-200 ease-out",
+                  "cursor-pointer"
+                )}
+              >
                 Hire Me
-              </Button>
+              </Link>
 
+              {/* Mobile Menu Toggle */}
               {isMobile && (
                 <button
                   onClick={() => setIsOpen(!isOpen)}

@@ -1,10 +1,9 @@
 "use client";
 
-import { useRef, useMemo, Suspense } from "react";
+import { useRef, useMemo, Suspense, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
 import * as THREE from "three";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 function generateParticles(count: number): Float32Array {
   const pos = new Float32Array(count * 3);
@@ -72,8 +71,6 @@ function Scene() {
       camera={{ position: [0, 0, 10], fov: 60 }}
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
-      role="img"
-      aria-label="Decorative 3D particle background"
     >
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} color="#E8330A" intensity={0.5} />
@@ -85,15 +82,22 @@ function Scene() {
 }
 
 export function ParticleField() {
-  const { isMobile, prefersReducedMotion } = useMediaQuery();
+  const [mounted, setMounted] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
-  if (isMobile || prefersReducedMotion) {
-    return null;
-  }
+  useEffect(() => {
+    setMounted(true);
+    const isMobile = window.innerWidth < 768;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setShouldRender(!isMobile && !prefersReduced);
+  }, []);
 
   return (
-    <div className="fixed inset-0 -z-10 opacity-50 pointer-events-none">
-      <Scene />
+    <div
+      className="fixed inset-0 -z-10 opacity-50 pointer-events-none"
+      aria-hidden="true"
+    >
+      {mounted && shouldRender && <Scene />}
     </div>
   );
 }

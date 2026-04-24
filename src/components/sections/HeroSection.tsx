@@ -7,11 +7,18 @@ import { ArrowDown, Download, Mail } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { Button } from "@/components/ui";
 import { SplitText } from "@/components/shared/SplitText";
-import { FloatingGeometry } from "@/components/three/FloatingGeometry";
 import { siteConfig } from "@/lib/metadata";
 
 const ParticleField = dynamic(
   () => import("@/components/three/ParticleField").then((mod) => mod.ParticleField),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
+
+const FloatingGeometry = dynamic(
+  () => import("@/components/three/FloatingGeometry").then((mod) => mod.FloatingGeometry),
   {
     ssr: false,
     loading: () => null,
