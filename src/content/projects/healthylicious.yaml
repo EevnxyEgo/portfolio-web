@@ -1,0 +1,51 @@
+title: Healthylicious
+tagline: "Smart recipe recommendations tailored to your ingredients and diet"
+category: ml-ai
+status: archived
+year: 2024
+type: group
+context: "Bangkit Academy — Study Independent Final Project (Capstone)"
+role: "Machine Learning Developer"
+featured: false
+order: 4
+
+techStack:
+  - Python
+  - "TensorFlow Recommenders"
+  - scikit-learn
+  - "Google Cloud Platform"
+  - Flutter
+  - "Bangkit Academy"
+
+summary: >
+  Healthylicious is an innovative mobile application that makes maintaining
+  a healthy diet more accessible. It helps users make informed food choices
+  by recommending healthy recipes tailored to available ingredients and
+  dietary preferences — because healthy should be delicious.
+
+myRole: >
+  As the Machine Learning Developer, I designed and implemented the Recipe
+  Recommendation System. This included collecting and preprocessing recipe
+  data, training the recommendation model using TensorFlow Recommenders and
+  scikit-learn, and integrating the system with the mobile app. I worked
+  closely with the Cloud Team and the Mobile Development Team to ensure
+  seamless cross-platform integration.
+
+impact: >
+  My contribution enabled the application to provide personalized and
+  intelligent meal suggestions — significantly enhancing the app's core
+  functionality and user experience. The project was presented as the
+  Bangkit Academy capstone, representing the team's ability to ship a
+  complete ML-powered mobile product.
+
+learnings: >
+  Through this project, I gained technical expertise in ML pipelines,
+  feature engineering, and system deployment in mobile environments.
+  Working across cloud and app development teams reinforced that
+  adaptability, resilience, and continuous communication are what
+  ultimately determine project success — not just technical preparation.
+
+links:
+  github: ""
+  demo: ""
+  report: "https://shorturl.at/lhkHt"

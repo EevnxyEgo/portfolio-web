@@ -1,0 +1,22 @@
+title: Bangkit Academy Machine Learning Certificate
+issuer: "Google, Tokopedia, Traveloka, Gojek"
+date: "2024"
+expiryDate: ""
+credentialId: "ML-2024-BAKTI-XXXXX"
+credentialUrl: "https://www.credential.net/arsenius"
+description: >
+  Certified Machine Learning cohort graduate from Bangkit Academy,
+  a Google-led program designed to produce industry-ready tech talent.
+  Completed intensive training in TensorFlow, ML pipelines, and
+  cloud-based deployment. Capstone: Healthylicious recipe recommendation system.
+
+skills:
+  - TensorFlow
+  - Machine Learning
+  - Python
+  - Google Cloud Platform
+  - ML Pipelines
+  - Team Collaboration
+
+category: ml-ai
+verified: true

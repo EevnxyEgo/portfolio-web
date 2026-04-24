@@ -41,6 +41,10 @@ const badgeVariants = cva(
           bg-transparent text-[var(--color-text-secondary)]
           border border-[var(--color-border-bright)]
         `,
+        subtle: `
+          bg-[var(--color-bg-subtle)] text-[var(--color-text-tertiary)]
+          border border-transparent
+        `,
       },
       size: {
         sm: "text-[10px] px-2 py-0.5",

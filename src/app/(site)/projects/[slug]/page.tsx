@@ -1,22 +1,40 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getProjectBySlug, getAllProjectSlugs } from "@/lib/keystatic";
+import { ProjectDetailClient } from "@/components/sections/ProjectDetailClient";
 
-export const metadata: Metadata = {
-  title: "Project | Arsenius Audley",
-};
+interface Props {
+  params: Promise<{ slug: string }>;
+}
 
-export default function ProjectDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  return (
-    <div className="min-h-screen pt-32 pb-20">
-      <div className="max-w-4xl mx-auto px-6">
-        <h1 className="text-h1 font-heading">Project: {params.slug}</h1>
-        <p className="text-[var(--color-text-secondary)] mt-4">
-          Full page coming soon.
-        </p>
-      </div>
-    </div>
-  );
+export async function generateStaticParams() {
+  const slugs = getAllProjectSlugs();
+  return slugs.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const project = getProjectBySlug(slug);
+
+  if (!project) {
+    return {
+      title: "Project Not Found | Arsenius Audley",
+    };
+  }
+
+  return {
+    title: `${project.title} | Arsenius Audley`,
+    description: project.tagline,
+  };
+}
+
+export default async function ProjectDetailPage({ params }: Props) {
+  const { slug } = await params;
+  const project = getProjectBySlug(slug);
+
+  if (!project) {
+    notFound();
+  }
+
+  return <ProjectDetailClient project={project} />;
 }

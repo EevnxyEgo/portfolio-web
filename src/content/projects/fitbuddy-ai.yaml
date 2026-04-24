@@ -1,0 +1,54 @@
+title: FitBuddy AI
+tagline: "Voice AI fitness trainer — talk to your workout plan"
+category: fullstack
+status: dev
+year: 2024
+type: individual
+context: "Self-initiated project — learning journey in Next.js & TypeScript (Coursera + Udemy)"
+role: "Sole Developer (End-to-End)"
+featured: true
+order: 2
+
+techStack:
+  - Next.js
+  - TypeScript
+  - Gemini API
+  - vapi.ai
+  - Clerk
+  - Convex
+  - shadcn-ui
+  - Tailwind CSS
+
+summary: >
+  FitBuddy AI is a web-based fitness trainer powered by a voice agent
+  that provides personalized workout plans, diet recommendations, and
+  interactive guidance. Users can speak directly with the AI for
+  consultation, making the training experience more natural and engaging.
+
+myRole: >
+  As the sole developer, I built the application end-to-end — from the
+  Next.js + TypeScript web app with shadcn-ui, to implementing Clerk for
+  authentication and Convex as the database. I integrated vapi.ai as a
+  voice agent for real-time AI conversations, and used the Gemini API to
+  generate personalized workout plans and diet programs displayed
+  seamlessly within the web interface.
+
+impact: >
+  FitBuddy AI demonstrates how AI can make fitness training personalized,
+  interactive, and accessible. With its voice consultation feature and
+  automated plan generation, the project highlights the potential of
+  combining web development, voice AI, and generative AI to create a
+  genuinely engaging user experience.
+
+learnings: >
+  Through this project, I leveled up in full-stack web development with
+  Next.js and TypeScript, while gaining hands-on experience in AI
+  integration, authentication flows, and database management. I also
+  learned how to design a smooth AI-to-user interaction flow — where
+  voice consultation, workout planning, and diet generation come together
+  in a single cohesive web platform.
+
+links:
+  github: "https://github.com/EevnxyEgo/FitBuddyAI"
+  demo: ""
+  report: ""
