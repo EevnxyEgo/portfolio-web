@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Arsenius Audley Portfolio
 
-## Getting Started
+Fullstack Developer & ML Engineer portfolio built with Next.js 15, TypeScript, Tailwind CSS v4, and Framer Motion.
 
-First, run the development server:
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router, Server Components)
+- **Language**: TypeScript (strict mode)
+- **Styling**: Tailwind CSS v4 + CSS Variables
+- **Animation**: Framer Motion v11
+- **3D**: React Three Fiber + Drei
+- **CMS**: Keystatic (file-based YAML)
+- **Deploy**: Docker + Nginx + VPS
+
+## Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+├── src/
+│   ├── app/                  # Next.js app router
+│   │   ├── (site)/          # Public pages
+│   │   ├── (keystatic)/     # CMS admin
+│   │   └── api/             # API routes
+│   ├── components/
+│   │   ├── layout/          # Navbar, Footer
+│   │   ├── sections/        # Page sections
+│   │   ├── shared/          # Reusable components
+│   │   └── ui/              # UI primitives
+│   ├── content/
+│   │   ├── projects/        # Project YAML files
+│   │   └── certifications/  # Certification YAML files
+│   ├── hooks/               # Custom React hooks
+│   ├── lib/                 # Utilities
+│   └── types/               # TypeScript types
+├── public/                  # Static assets
+└── docs/                    # Documentation
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Content Management
 
-## Learn More
+Projects and certifications are managed via YAML files in `src/content/`. Edit these files to update portfolio content.
 
-To learn more about Next.js, take a look at the following resources:
+### Add a Project
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a new YAML file in `src/content/projects/`:
+```yaml
+title: Project Name
+tagline: Short description
+category: ml-ai
+status: active
+year: 2024
+techStack:
+  - React
+  - Next.js
+summary: >
+  Full description here.
+# ... more fields
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Add a Certification
 
-## Deploy on Vercel
+Create a new YAML file in `src/content/certifications/`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Docker (Recommended)
+
+```bash
+# Build and run
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+```
+
+### Manual Deploy
+
+1. Build: `npm run build`
+2. Copy `.next/standalone` to server
+3. Run: `node server.js`
+
+## Environment Variables
+
+Copy `.env.production.example` to `.env.production` and configure:
+- `RESEND_API_KEY` - For contact form email
+
+## Validation
+
+Before committing, run:
+```bash
+npm run validate  # tsc + lint + build
+```
+
+## License
+
+MIT
