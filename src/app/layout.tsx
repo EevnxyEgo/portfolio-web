@@ -10,7 +10,7 @@ import "./globals.css";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { ScrollProgress } from "@/components/shared/ScrollProgress";
-import { CustomCursor } from "@/components/shared/CustomCursor";
+import { SmartCursor } from "@/components/shared/SmartCursor";
 
 const bebasNeue = Bebas_Neue({
   subsets: ["latin"],
@@ -112,9 +112,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`min-h-screen flex flex-col antialiased ${bebasNeue.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable}`}>
+      <body className={`min-h-screen flex flex-col antialiased cursor-none ${bebasNeue.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable}`}>
         <ThemeProvider>
-          <CustomCursor />
+          <SmartCursor />
           <ScrollProgress />
           <JsonLd />
           {children}
