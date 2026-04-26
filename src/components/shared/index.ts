@@ -10,3 +10,4 @@ export { AnimatedCounter } from "./AnimatedCounter";
 export { SectionReveal } from "./SectionReveal";
 export { ParallaxLayer } from "./ParallaxLayer";
 export { JsonLd } from "./JsonLd";
+export { ThemeProvider, useTheme } from "./ThemeProvider";

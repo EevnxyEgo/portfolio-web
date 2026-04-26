@@ -3,11 +3,14 @@ import {
   Space_Grotesk,
   DM_Sans,
   JetBrains_Mono,
-  Instrument_Serif,
+  Playfair_Display,
   Bebas_Neue,
 } from "next/font/google";
 import "./globals.css";
 import { JsonLd } from "@/components/shared/JsonLd";
+import { ThemeProvider } from "@/components/shared/ThemeProvider";
+import { ScrollProgress } from "@/components/shared/ScrollProgress";
+import { CustomCursor } from "@/components/shared/CustomCursor";
 
 const bebasNeue = Bebas_Neue({
   subsets: ["latin"],
@@ -34,12 +37,11 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const instrumentSerif = Instrument_Serif({
+const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
+  variable: "--font-playfair",
   display: "swap",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -109,13 +111,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${bebasNeue.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable}`}
-    >
+    <html lang="en">
       <body className="min-h-screen flex flex-col antialiased">
-        <JsonLd />
-        {children}
+        <ThemeProvider>
+          <CustomCursor />
+          <ScrollProgress />
+          <JsonLd />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
