@@ -112,7 +112,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col antialiased">
+      <body className={`min-h-screen flex flex-col antialiased ${bebasNeue.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable}`}>
         <ThemeProvider>
           <CustomCursor />
           <ScrollProgress />
