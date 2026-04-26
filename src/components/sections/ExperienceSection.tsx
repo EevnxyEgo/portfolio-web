@@ -1,59 +1,80 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const experiences = [
+interface ExperienceEntry {
+  year: string;
+  title: string;
+  organization: string;
+  location: string;
+  description: string;
+  tags?: string[];
+  /** Key entry = filled primary dot; other = border-only dot */
+  keyEntry?: boolean;
+}
+
+const experiences: ExperienceEntry[] = [
   {
     year: "2024",
     title: "Fresh Graduate",
     organization: "Institut Teknologi Sepuluh Nopember (ITS)",
     location: "Surabaya, Indonesia",
-    colorClass: "bg-[var(--color-primary)]",
     description: "Computer Engineering degree — learned that the most interesting problems live at the boundary between disciplines.",
+    tags: ["Computer Engineering", "Systems Design", "Research"],
+    keyEntry: true,
   },
   {
     year: "2024",
     title: "Undergraduate Thesis",
     organization: "ITS Surabaya",
     location: "Surabaya, Indonesia",
-    colorClass: "bg-[var(--color-cool)]",
     description: "360° Dynamic Camera System for Digital Twin Concert Using Unreal Engine 5.",
+    tags: ["Unreal Engine 5", "Digital Twin", "Real-time 3D", "Camera Systems"],
+    keyEntry: true,
   },
   {
     year: "2024",
     title: "Bangkit Academy — ML Cohort",
     organization: "Google × Tokopedia × Traveloka × Gojek",
     location: "Remote",
-    colorClass: "bg-[var(--color-warm)]",
     description: "Machine Learning specialization. Capstone: Healthylicious recipe recommender.",
+    tags: ["Machine Learning", "TensorFlow", "Recommender Systems", "Capstone"],
+    keyEntry: true,
   },
   {
     year: "2024",
     title: "Self-Directed Learning",
     organization: "Coursera + Udemy",
     location: "Self-paced",
-    colorClass: "bg-[var(--color-sage)]",
     description: "Advanced Next.js & TypeScript. Output: FitBuddy AI — voice AI fitness trainer.",
+    tags: ["Next.js", "TypeScript", "AI Integration"],
+    keyEntry: false,
   },
   {
     year: "2023",
     title: "Computer Vision Project",
     organization: "ITS — Computer Vision Course",
     location: "Surabaya, Indonesia",
-    colorClass: "bg-[var(--color-primary)]",
     description: "41-Card Game: Real-time playing card detection with CNN + OpenCV.",
+    tags: ["Computer Vision", "CNN", "OpenCV", "Real-time Detection"],
+    keyEntry: false,
   },
   {
     year: "2023",
     title: "Mobile ML Project",
     organization: "ITS — Telematics Course",
     location: "Surabaya, Indonesia",
-    colorClass: "bg-[var(--color-cool)]",
     description: "BAKI: AI-powered fitness app with real-time exercise detection using MLKit.",
+    tags: ["MLKit", "Mobile ML", "Pose Detection", "Android"],
+    keyEntry: false,
   },
 ];
+
+// Timeline geometry constants
+const TIMELINE_LEFT = "120px"; // absolute position of the vertical line
+const YEAR_LEFT = "0px";        // year anchors to the left edge of the container
+const CONTENT_LEFT = "160px";   // content starts 40px right of the timeline
 
 export function ExperienceSection() {
   const prefersReduced = useReducedMotion();
@@ -61,90 +82,190 @@ export function ExperienceSection() {
   return (
     <section
       id="experience"
-      className="relative py-[clamp(5rem,10vw,8rem)] bg-[var(--color-bg-elevated)]"
+      className="relative py-[clamp(5rem,10vw,8rem)] bg-[var(--color-bg)]"
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        {/* Section header */}
+      <div className="max-w-[680px] mx-auto px-6 lg:px-8">
+        {/* Section header — left-aligned, editorial */}
         <motion.div
-          initial={prefersReduced ? false : { opacity: 0, y: 20 }}
+          initial={prefersReduced ? false : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mb-16"
         >
-          <span className="font-accent text-accent text-sm tracking-[0.08em] uppercase">
+          <span
+            className="section-eyebrow"
+            style={{ display: "block", marginBottom: "0.375rem" }}
+          >
             My Journey
           </span>
-          <h2 className="font-display text-[clamp(2rem,4vw,3.5rem)] mt-2">
-            EXPERIENCE
+          <h2
+            className="font-serif"
+            style={{
+              fontFamily: "var(--font-playfair), serif",
+              fontSize: "clamp(2rem, 5vw, 2.75rem)",
+              fontWeight: 700,
+              lineHeight: 1.1,
+              color: "var(--color-text)",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Experience.
           </h2>
-          <p className="text-[var(--color-text-secondary)] text-body-lg mt-4 max-w-2xl mx-auto">
-            From student to builder — the path that shaped my skills
-          </p>
         </motion.div>
 
-        {/* Timeline */}
-        <div className="relative max-w-3xl mx-auto">
-          {/* Animated vertical line */}
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-[var(--color-border)]" />
+        {/* Timeline body */}
+        <div className="relative" style={{ minHeight: `${experiences.length * 100}px` }}>
+          {/* Animated vertical line — draws from top to bottom */}
+          <motion.div
+            initial={prefersReduced ? false : { scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+            style={{
+              position: "absolute",
+              left: TIMELINE_LEFT,
+              top: 0,
+              bottom: 0,
+              width: "1px",
+              backgroundColor: "var(--color-border)",
+              transformOrigin: "top center",
+            }}
+          />
 
           {/* Experience entries */}
-          <div className="space-y-8">
-            {experiences.map((exp) => (
+          <div className="space-y-14">
+            {experiences.map((exp, index) => (
               <motion.div
-                key={exp.title + exp.year}
-                initial={prefersReduced ? false : { opacity: 0, y: 30 }}
+                key={`${exp.year}-${exp.title}`}
+                initial={prefersReduced ? false : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
+                viewport={{ once: true, margin: "-40px" }}
                 transition={{
                   duration: 0.5,
-                  delay: 0.1,
+                  delay: 0.05,
+                  ease: [0.25, 0.46, 0.45, 0.94],
                 }}
-                className="relative pl-12 md:pl-0"
+                className="relative"
               >
-                {/* Colored dot */}
-                <div className={cn(
-                  "absolute left-4 md:left-1/2 top-0 -translate-x-1/2 -translate-y-1",
-                  "w-3 h-3 rounded-full ring-4 ring-[var(--color-bg-elevated)]",
-                  exp.colorClass
-                )} />
-
-                {/* Content card */}
-                <motion.div
-                  initial={prefersReduced ? false : { opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className={cn(
-                    "p-5 rounded-lg border border-[var(--color-border)]",
-                    "bg-[var(--color-bg)]",
-                    "hover:border-[var(--color-border-bright)]",
-                    "transition-all duration-300"
-                  )}
+                {/* Year — left of the timeline */}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: YEAR_LEFT,
+                    top: "2px",
+                    width: "90px",
+                    textAlign: "right",
+                    fontFamily: "var(--font-bebas), sans-serif",
+                    fontSize: "1.2rem",
+                    lineHeight: 1,
+                    color: "var(--color-text-tertiary)",
+                    letterSpacing: "0.05em",
+                    userSelect: "none",
+                  }}
                 >
-                  {/* Year */}
-                  <span className="inline-block font-mono text-sm text-[var(--color-accent)] mb-1">
-                    {exp.year}
-                  </span>
+                  {exp.year}
+                </div>
 
-                  {/* Title & org */}
-                  <h3 className="font-heading text-lg font-semibold mb-0.5">
+                {/* Dot — on the timeline */}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: `calc(${TIMELINE_LEFT} - 4px)`,
+                    top: "6px",
+                    width: "8px",
+                    height: "8px",
+                    borderRadius: "50%",
+                    backgroundColor: exp.keyEntry
+                      ? "var(--color-primary)"
+                      : "var(--color-bg)",
+                    border: exp.keyEntry
+                      ? "none"
+                      : "1.5px solid var(--color-border)",
+                    boxShadow: exp.keyEntry
+                      ? "0 0 0 3px var(--color-bg), 0 0 0 4px var(--color-primary)"
+                      : "none",
+                    zIndex: 1,
+                  }}
+                />
+
+                {/* Content — right of the timeline */}
+                <div
+                  style={{
+                    marginLeft: CONTENT_LEFT,
+                    paddingTop: "0",
+                  }}
+                >
+                  {/* Title */}
+                  <h3
+                    style={{
+                      fontFamily: "var(--font-dm-sans), sans-serif",
+                      fontSize: "1rem",
+                      fontWeight: 600,
+                      lineHeight: 1.3,
+                      color: "var(--color-text)",
+                      marginBottom: "0.2rem",
+                    }}
+                  >
                     {exp.title}
                   </h3>
-                  <p className="text-[var(--color-text-secondary)] text-sm mb-1">
+
+                  {/* Organization */}
+                  <p
+                    style={{
+                      fontFamily: "var(--font-dm-sans), sans-serif",
+                      fontSize: "0.9rem",
+                      fontWeight: 400,
+                      color: "var(--color-text-secondary)",
+                      lineHeight: 1.4,
+                      marginBottom: "0.2rem",
+                    }}
+                  >
                     {exp.organization}
                   </p>
 
                   {/* Location */}
-                  <p className="text-xs text-[var(--color-text-tertiary)] mb-3">
+                  <p
+                    style={{
+                      fontFamily: "var(--font-jetbrains), monospace",
+                      fontSize: "0.72rem",
+                      color: "var(--color-text-tertiary)",
+                      letterSpacing: "0.03em",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
                     {exp.location}
                   </p>
 
                   {/* Description */}
-                  <p className="text-[var(--color-text-secondary)] text-sm">
+                  <p
+                    style={{
+                      fontFamily: "var(--font-dm-sans), sans-serif",
+                      fontSize: "0.9rem",
+                      color: "var(--color-text-secondary)",
+                      lineHeight: 1.6,
+                      maxWidth: "48ch",
+                      marginBottom: exp.tags ? "0.75rem" : 0,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
                     {exp.description}
                   </p>
-                </motion.div>
+
+                  {/* Tags */}
+                  {exp.tags && (
+                    <div className="flex flex-wrap gap-2">
+                      {exp.tags.map((tag) => (
+                        <span key={tag} className="tag">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </motion.div>
             ))}
           </div>

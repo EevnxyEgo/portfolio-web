@@ -1,55 +1,181 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useReducedMotion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { motion, useReducedMotion } from "framer-motion";
 
-const skillCategories = [
+// ─── Skill data ────────────────────────────────────────────────────────────────
+
+const skillGroups = [
   {
-    name: "Frontend",
-    tagClass: "tag-primary",
+    label: "Frontend & Web",
+    accent: "var(--color-primary)",
     skills: [
-      "React", "Next.js", "TypeScript", "JavaScript", "HTML/CSS",
-      "Tailwind CSS", "shadcn-ui", "Framer Motion",
+      "React",
+      "Next.js",
+      "TypeScript",
+      "JavaScript",
+      "HTML/CSS",
+      "Tailwind CSS",
+      "shadcn-ui",
+      "Framer Motion",
     ],
   },
   {
-    name: "Backend",
-    tagClass: "tag-warm",
+    label: "Backend & APIs",
+    accent: "var(--color-sky)",
     skills: [
-      "Express.js", "Node.js", "Python", "REST APIs",
-      "Convex", "Clerk Auth",
+      "Express.js",
+      "Node.js",
+      "Python",
+      "REST APIs",
+      "Convex",
+      "Clerk Auth",
     ],
   },
   {
-    name: "AI / ML",
-    tagClass: "tag-cool",
+    label: "AI / Machine Learning",
+    accent: "var(--color-amber)",
     skills: [
-      "TensorFlow", "Keras", "scikit-learn", "OpenCV", "MLKit",
-      "TensorFlow Recommenders", "Gemini API", "vapi.ai",
-      "Pose Detection", "CNN", "NLP",
+      "TensorFlow",
+      "Keras",
+      "scikit-learn",
+      "OpenCV",
+      "MLKit",
+      "TensorFlow Recommenders",
+      "Gemini API",
+      "vapi.ai",
+      "Pose Detection",
+      "CNN",
+      "NLP",
     ],
   },
   {
-    name: "3D & Creative",
-    tagClass: "tag-sage",
+    label: "Mobile",
+    accent: "var(--color-sage)",
+    skills: ["React Native", "Flutter", "iOS", "Android"],
+  },
+  {
+    label: "3D & Creative Tech",
+    accent: "var(--color-blush)",
     skills: [
-      "Unreal Engine 5", "Blender", "MetaHuman",
-      "React Three Fiber", "Three.js",
+      "Unreal Engine 5",
+      "Blender",
+      "MetaHuman",
+      "React Three Fiber",
+      "Three.js",
     ],
   },
   {
-    name: "Tools",
-    tagClass: "tag",
+    label: "Tools & DevOps",
+    accent: "var(--color-text-secondary)",
     skills: [
-      "Git", "Docker", "Nginx", "Linux", "Vercel",
-      "GCP", "Figma", "VS Code",
+      "Git",
+      "Docker",
+      "Nginx",
+      "Linux",
+      "Vercel",
+      "GCP",
+      "Figma",
+      "VS Code",
     ],
   },
-];
+] as const;
+
+// ─── Tag atom ─────────────────────────────────────────────────────────────────
+
+function SkillTag({
+  skill,
+  accent,
+  delay,
+  reduced,
+}: {
+  skill: string;
+  accent: string;
+  delay: number;
+  reduced: boolean;
+}) {
+  const initialState = reduced
+    ? undefined
+    : { opacity: 0, scale: 0.9 };
+  const animateState = reduced
+    ? undefined
+    : { opacity: 1, scale: 1 };
+
+  return (
+    <motion.span
+      initial={initialState}
+      whileInView={animateState}
+      viewport={{ once: true }}
+      transition={{ duration: 0.25, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="skill-tag"
+      style={
+        {
+          "--tag-accent": accent,
+        } as React.CSSProperties
+      }
+    >
+      {skill}
+    </motion.span>
+  );
+}
+
+// ─── Group row ────────────────────────────────────────────────────────────────
+
+function SkillGroup({
+  group,
+  groupIndex,
+  reduced,
+}: {
+  group: (typeof skillGroups)[number];
+  groupIndex: number;
+  reduced: boolean;
+}) {
+  const baseDelay = groupIndex * 0.08;
+
+  const initialState = reduced ? undefined : { opacity: 0, y: 10 };
+  const animateState = reduced ? undefined : { opacity: 1, y: 0 };
+
+  return (
+    <motion.div
+      initial={initialState}
+      whileInView={animateState}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.35, delay: baseDelay }}
+      className="flex flex-col gap-3"
+    >
+      {/* Category label */}
+      <span className="text-label" style={{ color: "var(--color-text-secondary)" }}>
+        {group.label}
+      </span>
+
+      {/* Tag cloud — no wrapping cards, just free-floating pills */}
+      <div className="flex flex-wrap gap-2">
+        {group.skills.map((skill, i) => (
+          <SkillTag
+            key={skill}
+            skill={skill}
+            accent={group.accent}
+            delay={baseDelay + i * 0.03}
+            reduced={reduced}
+          />
+        ))}
+      </div>
+
+      {/* Thin divider — last group skips the separator */}
+      {groupIndex < skillGroups.length - 1 && (
+        <div className="mt-5 h-px w-full bg-[var(--color-border)]" />
+      )}
+    </motion.div>
+  );
+}
+
+// ─── Section ───────────────────────────────────────────────────────────────────
 
 export function SkillsSection() {
   const prefersReduced = useReducedMotion();
+  const reduced = prefersReduced === true;
+
+  const headerInitial = reduced ? undefined : { opacity: 0, y: 20 };
+  const headerAnimate = reduced ? undefined : { opacity: 1, y: 0 };
 
   return (
     <section
@@ -57,75 +183,66 @@ export function SkillsSection() {
       className="relative py-[clamp(5rem,10vw,8rem)] bg-[var(--color-bg-elevated)]"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        {/* Section header */}
-        <motion.div
-          initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <span className="font-accent text-accent text-sm tracking-[0.08em] uppercase">
-            My Technical Arsenal
-          </span>
-          <h2 className="font-display text-[clamp(2rem,4vw,3.5rem)] mt-2">
-            SKILLS
-          </h2>
-          <p className="text-[var(--color-text-secondary)] text-body-lg mt-4 max-w-2xl mx-auto">
-            Technologies I use to turn ideas into reality
-          </p>
-        </motion.div>
+        {/* ── 2-column grid ─────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-12 lg:gap-16 items-start">
 
-        {/* Flowing tag cloud */}
-        <motion.div
-          initial={prefersReduced ? false : { opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-wrap gap-3 justify-center max-w-4xl mx-auto"
-        >
-          {skillCategories.map((category, categoryIndex) =>
-            category.skills.map((skill, skillIndex) => (
-              <motion.div
-                key={skill}
-                initial={prefersReduced ? false : { opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.3,
-                  delay: (categoryIndex * 0.1) + (skillIndex * 0.03),
+          {/* ── LEFT: sticky section header ───────────────────────── */}
+          <div className="lg:sticky lg:top-[calc(2rem+var(--scroll-offset,0px))] self-start">
+            <motion.div
+              initial={headerInitial}
+              whileInView={headerAnimate}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Eyebrow */}
+              <span
+                className="section-eyebrow block mb-3"
+                style={{ fontFamily: "var(--font-mono)" }}
+              >
+                What I work with
+              </span>
+
+              {/* Heading */}
+              <h2
+                className="mb-4"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "clamp(2rem, 3.5vw, 2.5rem)",
+                  lineHeight: 1.15,
+                  color: "var(--color-text)",
                 }}
               >
-                <span className={category.tagClass}>{skill}</span>
-              </motion.div>
-            ))
-          )}
-        </motion.div>
+                My technical
+                <br />
+                arsenal.
+              </h2>
 
-        {/* Category labels below */}
-        <motion.div
-          initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-wrap justify-center gap-8 mt-12 pt-8 border-t border-[var(--color-border)]"
-        >
-          {skillCategories.map((category) => (
-            <div key={category.name} className="flex items-center gap-2">
-              <div className={cn(
-                "w-3 h-3 rounded-full",
-                category.tagClass === "tag-primary" && "bg-[var(--color-primary)]",
-                category.tagClass === "tag-warm" && "bg-[var(--color-warm)]",
-                category.tagClass === "tag-cool" && "bg-[var(--color-cool)]",
-                category.tagClass === "tag-sage" && "bg-[var(--color-sage)]",
-                category.tagClass === "tag" && "bg-[var(--color-text-tertiary)]",
-              )} />
-              <span className="font-heading text-sm text-[var(--color-text-secondary)]">
-                {category.name}
-              </span>
-            </div>
-          ))}
-        </motion.div>
+              {/* Sub copy */}
+              <p
+                className="text-sm"
+                style={{
+                  fontFamily: "var(--font-body)",
+                  color: "var(--color-text-secondary)",
+                  lineHeight: 1.65,
+                }}
+              >
+                From training ML models to shipping production web apps.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* ── RIGHT: skill group tag clouds ─────────────────────── */}
+          <div className="flex flex-col gap-6">
+            {skillGroups.map((group, i) => (
+              <SkillGroup
+                key={group.label}
+                group={group}
+                groupIndex={i}
+                reduced={reduced}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
