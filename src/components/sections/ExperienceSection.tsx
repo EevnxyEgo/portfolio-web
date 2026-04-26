@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface ExperienceEntry {
@@ -75,6 +76,44 @@ const experiences: ExperienceEntry[] = [
 const TIMELINE_LEFT = "120px"; // absolute position of the vertical line
 const YEAR_LEFT = "0px";        // year anchors to the left edge of the container
 const CONTENT_LEFT = "160px";   // content starts 40px right of the timeline
+
+/** Individual timeline dot with a single pulse animation after 1s in viewport */
+function TimelineDot({ keyEntry }: { keyEntry?: boolean }) {
+  const [pulsed, setPulsed] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setPulsed(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <motion.div
+      animate={
+        pulsed
+          ? {
+              scale: [1, 1.4, 1],
+              opacity: [1, 0.6, 1],
+              transition: { duration: 0.6 },
+            }
+          : { scale: 1, opacity: 1 }
+      }
+      style={{
+        position: "absolute",
+        left: `calc(${TIMELINE_LEFT} - 4px)`,
+        top: "6px",
+        width: "8px",
+        height: "8px",
+        borderRadius: "50%",
+        backgroundColor: keyEntry ? "var(--color-primary)" : "var(--color-bg)",
+        border: keyEntry ? "none" : "1.5px solid var(--color-border)",
+        boxShadow: keyEntry
+          ? "0 0 0 3px var(--color-bg), 0 0 0 4px var(--color-primary)"
+          : "none",
+        zIndex: 1,
+      }}
+    />
+  );
+}
 
 export function ExperienceSection() {
   const prefersReduced = useReducedMotion();
@@ -168,26 +207,7 @@ export function ExperienceSection() {
                 </div>
 
                 {/* Dot — on the timeline */}
-                <div
-                  style={{
-                    position: "absolute",
-                    left: `calc(${TIMELINE_LEFT} - 4px)`,
-                    top: "6px",
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    backgroundColor: exp.keyEntry
-                      ? "var(--color-primary)"
-                      : "var(--color-bg)",
-                    border: exp.keyEntry
-                      ? "none"
-                      : "1.5px solid var(--color-border)",
-                    boxShadow: exp.keyEntry
-                      ? "0 0 0 3px var(--color-bg), 0 0 0 4px var(--color-primary)"
-                      : "none",
-                    zIndex: 1,
-                  }}
-                />
+                <TimelineDot keyEntry={exp.keyEntry} />
 
                 {/* Content — right of the timeline */}
                 <div

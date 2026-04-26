@@ -298,6 +298,7 @@ body {
   background-color: var(--color-bg);
   min-height: 100vh;
   overflow-x: hidden;
+  cursor: none;
 }
 
 /* ── Typography Utilities ────────────────────────────────────────────────────── */
@@ -554,6 +555,7 @@ body {
 
 /* ── Form Input Styles ─────────────────────────────────────────────────────────── */
 .form-input {
+  position: relative;
   width: 100%;
   padding: 0.875rem 1rem;
   background: var(--color-bg-elevated);
@@ -573,6 +575,26 @@ body {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-primary-muted);
+}
+
+/* Border draw animation on focus */
+.form-input:focus::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transform: scaleX(0);
+  transform-origin: center;
+  animation: border-draw 0.3s ease forwards;
+  pointer-events: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+@keyframes border-draw {
+  to { transform: scaleX(1); }
 }
 
 .form-label {
