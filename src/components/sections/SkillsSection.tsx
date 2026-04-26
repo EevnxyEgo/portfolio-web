@@ -1,6 +1,29 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useState, useEffect } from "react";
+
+// ─── Skill descriptions map ────────────────────────────────────────────────────
+const skillDescriptions: Record<string, string> = {
+  "React": "UI library by Meta",
+  "Next.js": "React framework for production",
+  "TypeScript": "Typed JavaScript superset",
+  "TensorFlow": "ML platform by Google",
+  "Keras": "Deep learning API",
+  "scikit-learn": "ML library for Python",
+  "OpenCV": "Computer vision library",
+  "MLKit": "On-device ML by Google",
+  "TensorFlow Recommenders": "Recommender system library",
+  "Unreal Engine 5": "Real-time 3D creation suite",
+  "MetaHuman": "Realistic digital humans",
+  "React Three Fiber": "Three.js for React",
+  "CNN": "Convolutional Neural Network",
+  "NLP": "Natural Language Processing",
+  "GCP": "Google Cloud Platform",
+  "Python": "General-purpose programming",
+  "Convex": "Full-stack TypeScript platform",
+  "Clerk Auth": "Authentication platform",
+};
 
 // ─── Skill data ────────────────────────────────────────────────────────────────
 
@@ -87,12 +110,15 @@ function SkillTag({
   accent,
   delay,
   reduced,
+  description,
 }: {
   skill: string;
   accent: string;
   delay: number;
   reduced: boolean;
+  description?: string;
 }) {
+  const [showTooltip, setShowTooltip] = useState(false);
   const initialState = reduced
     ? undefined
     : { opacity: 0, scale: 0.9 };
@@ -101,20 +127,39 @@ function SkillTag({
     : { opacity: 1, scale: 1 };
 
   return (
-    <motion.span
-      initial={initialState}
-      whileInView={animateState}
-      viewport={{ once: true }}
-      transition={{ duration: 0.25, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="skill-tag"
-      style={
-        {
-          "--tag-accent": accent,
-        } as React.CSSProperties
-      }
-    >
-      {skill}
-    </motion.span>
+    <div className="relative inline-block">
+      <motion.span
+        initial={initialState}
+        whileInView={animateState}
+        viewport={{ once: true }}
+        transition={{ duration: 0.25, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="skill-tag"
+        style={
+          {
+            "--tag-accent": accent,
+          } as React.CSSProperties
+        }
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        onClick={() => {
+          const event = new CustomEvent("skillfilter", { detail: { skill }, bubbles: true });
+          document.dispatchEvent(event);
+        }}
+      >
+        {skill}
+      </motion.span>
+      {showTooltip && description && (
+        <div
+          className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap z-50 pointer-events-none"
+        >
+          <div
+            className="bg-[var(--color-bg-inverse)] text-[var(--color-text-inverse)] px-3 py-1.5 rounded-full font-mono text-[0.75rem]"
+          >
+            {description}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -156,6 +201,7 @@ function SkillGroup({
             accent={group.accent}
             delay={baseDelay + i * 0.03}
             reduced={reduced}
+            description={skillDescriptions[skill]}
           />
         ))}
       </div>
@@ -173,6 +219,15 @@ function SkillGroup({
 export function SkillsSection() {
   const prefersReduced = useReducedMotion();
   const reduced = prefersReduced === true;
+  const [activeSkill, setActiveSkill] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      setActiveSkill((e as CustomEvent<{skill: string}>).detail.skill);
+    };
+    document.addEventListener("skillfilter", handler);
+    return () => document.removeEventListener("skillfilter", handler);
+  }, []);
 
   const headerInitial = reduced ? undefined : { opacity: 0, y: 20 };
   const headerAnimate = reduced ? undefined : { opacity: 1, y: 0 };
@@ -244,6 +299,22 @@ export function SkillsSection() {
           </div>
         </div>
       </div>
+
+      {/* Clear filter banner */}
+      {activeSkill && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-full px-5 py-2 shadow-lg">
+          <span className="font-mono text-xs text-[var(--color-text-secondary)]">
+            Showing projects with <strong className="text-[var(--color-primary)]">{activeSkill}</strong>
+          </span>
+          <button
+            onClick={() => setActiveSkill(null)}
+            className="text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors text-lg leading-none"
+            aria-label="Clear filter"
+          >
+            ×
+          </button>
+        </div>
+      )}
     </section>
   );
 }
