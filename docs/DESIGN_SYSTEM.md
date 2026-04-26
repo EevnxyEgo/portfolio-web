@@ -1,665 +1,208 @@
-# DESIGN SYSTEM — Human-Centered Electric Brutalism
-> Referensi lengkap untuk semua keputusan visual dan motion di portfolio ini.
+# DESIGN SYSTEM — Warm Editorial
+> Warm cream + Playfair italic serif + vermillion red + extreme border-radius
 > Dibaca Claude Code saat mengerjakan komponen UI, animasi, atau styling.
 
 ---
 
-## 🎯 KONSEP VISUAL
+## KONSEP VISUAL
 
-**Nama:** Human-Centered Electric Brutalism
+**Nama:** Warm Editorial
 
-**Filosofi:** Portfolio ini harus terasa seperti **personality-driven editorial design**
-yang dicetak di atas kertas — bold, direct, human. Menghapus estetika "AI startup"
-yang generic (partikel neural network, wireframe 3D, cyan everywhere) dan menggantinya
-dengan geometric shapes yang intentional dan typography yang powerful.
+**Filosofi:** Portfolio ini terasa seperti majalah yang dirancang oleh seseorang
+yang bisa desain dan bisa koding — bold, confident, warm. Menghapus estetika
+"Electric Brutalism" (cold dark, neon cyan, glow effects) dan menggantinya dengan
+warm cream backgrounds, Playfair Display serif untuk editorial headings, dan
+vermillion red sebagai accent tunggal.
 
-**Kata kunci:** Dark. Bold. Human. Personality. Editorial.
-
-**Apa yang DIHAPUS:**
-- ParticleField dan FloatingGeometry dari hero (too "AI startup")
-- Noise overlay yang generic
-- Cyan accent yang overuse (#00D4FF everywhere)
-- Subtle gradient backgrounds
-
-**Apa yang DIAKTBATKAN:**
-- Bold CSS geometric shapes (triangles, lines) sebagai visual anchor
-- Strong typography hierarchy dengan Bebas Neue
-- Red #E8330A sebagai dominant accent, bukan cyan
-- Editorial-style section markers (01, 02, 03)
-- Asymmetric layouts dengan personality
+**Kata kunci:** Warm. Editorial. Confident. Human. Rounded.
 
 **Inspirasi referensi:**
-- ilithya.io — bold geometric, personality-driven
-- offmenu.studio — editorial brutalism, color blocking
-- Awwwards SOTD winners — unexpected layout, typography
-- Magazine layouts — bold type, asymmetric grids, personality
+- Bajgart — serif + sans inline mixing, enormous whitespace, minimal color
+- Jackie Hu — warm cream, collage layout, handwritten personality
+- Heexo — extreme border-radius, warm neutrals, paper-like texture
+
+**Apa yang DIHAPUS:**
+- ParticleField dan FloatingGeometry (no 3D in hero)
+- Neon cyan (#00D4FF) sebagai accent
+- Glow/bloom box-shadows
+- Cold black (#080808) backgrounds
+- Bebas Neue untuk semua section headings
+- Ghost/echo text effects
+- Electric Brutalism concept
+
+**Apa yang DIAKTBATKAN:**
+- Warm cream (#F7F3EE) sebagai base backgrounds
+- Playfair Display serif untuk editorial headings + inline italic accents
+- Extreme border-radius (28px–40px) pada semua cards
+- Warm shadows tanpa colored glows
+- Inline serif italic words dalam body text (Bajgart pattern)
 
 ---
 
-## 🎨 COLOR SYSTEM
+## WARNA SISTEM
 
-### CSS Variables (taruh di src/app/globals.css)
+### CSS Variables (src/app/globals.css)
 
 ```css
-:root {
-  /* ── Primary — Electric Vermillion ────────────────────────── */
-  --color-primary:        #E8330A;   /* hot red-orange, warna brand Arsenius */
-  --color-primary-glow:   #FF4D1C;   /* lighter variant untuk glow effects */
-  --color-primary-dark:   #B5260A;   /* darker untuk hover states */
-  --color-primary-muted:  #2A0A02;   /* dark tint untuk subtle backgrounds */
-  --color-primary-alpha:  rgba(232, 51, 10, 0.15); /* transparent overlay */
+/* Light theme */
+:root, [data-theme="light"] {
+  --color-bg:             #F7F3EE;  /* warm cream */
+  --color-bg-elevated:    #EEE9E2;  /* card surfaces */
+  --color-bg-subtle:       #E6E0D8;  /* hover states */
 
-  /* ── Background — Near-Black System ───────────────────────── */
-  --color-bg:             #080808;   /* root background */
-  --color-bg-elevated:    #111111;   /* cards, panels, modals */
-  --color-bg-subtle:      #1A1A1A;   /* hover state backgrounds */
-  --color-bg-overlay:     rgba(8, 8, 8, 0.85); /* overlay/backdrop */
+  --color-primary:        #E8330A;  /* vermillion — unchanged */
+  --color-primary-glow:   #FF4D1C;
+  --color-primary-dark:   #B5260A;
+  --color-primary-muted: rgba(232, 51, 10, 0.08);
 
-  /* ── Border ────────────────────────────────────────────────── */
-  --color-border:         #222222;   /* default borders */
-  --color-border-bright:  #333333;   /* active/focus borders */
-  --color-border-primary: rgba(232, 51, 10, 0.4); /* primary-tinted border */
+  /* Warm accents (replaces cold cyan) */
+  --color-amber:        #D97706;  /* AI/ML */
+  --color-amber-muted:  rgba(217, 119, 6, 0.10);
+  --color-sage:         #4A7C59;  /* tools/devops */
+  --color-sage-muted:  rgba(74, 124, 89, 0.10);
+  --color-sky:          #2E78B5;  /* backend */
+  --color-sky-muted:   rgba(46, 120, 181, 0.10);
+  --color-blush:        #C2556A; /* 3D/creative */
+  --color-blush-muted:  rgba(194, 85, 106, 0.10);
 
-  /* ── Text ──────────────────────────────────────────────────── */
-  --color-text-primary:   #F5F5F0;   /* main text, off-white (easier on eyes than pure white) */
-  --color-text-secondary: #888888;   /* supporting text, labels */
-  --color-text-tertiary:  #444444;   /* disabled, placeholder */
-  --color-text-inverse:   #080808;   /* text on light backgrounds */
+  --color-border:        #DDD8D0;  /* warm gray */
+  --color-border-strong:  #C4BEB3;
 
-  /* ── Accent — Electric Cyan (ML/AI identity) ───────────────── */
-  --color-accent:         #00D4FF;   /* cyan untuk AI/ML context */
-  --color-accent-glow:    #00AACC;   /* darker cyan untuk glow */
-  --color-accent-muted:   #001A22;   /* dark cyan backgrounds */
-  --color-accent-alpha:   rgba(0, 212, 255, 0.15);
+  --color-text:           #1A1714;  /* warm near-black */
+  --color-text-secondary: #6B6560;  /* warm medium */
+  --color-text-tertiary:  #A8A29C;  /* warm light */
 
-  /* ── Semantic ──────────────────────────────────────────────── */
-  --color-success:        #22C55E;
-  --color-warning:        #F59E0B;
-  --color-error:          #EF4444;
+  --shadow-sm:   0 1px 3px rgba(26,23,20,0.06);
+  --shadow-md:   0 4px 16px rgba(26,23,20,0.08);
+  --shadow-lg:   0 8px 32px rgba(26,23,20,0.10);
+  --shadow-card: 0 2px 8px rgba(26,23,20,0.07);
 
-  /* ── Gradients ─────────────────────────────────────────────── */
-  --gradient-hero:     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(232,51,10,0.25), transparent);
-  --gradient-glow-red: radial-gradient(circle at center, rgba(232,51,10,0.2), transparent 60%);
-  --gradient-glow-cyan:radial-gradient(circle at center, rgba(0,212,255,0.15), transparent 60%);
-  --gradient-card:     linear-gradient(135deg, #111111 0%, #0D0D0D 100%);
-  --gradient-shimmer:  linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-xl:   28px;
+  --radius-2xl:  40px;
+  --radius-full: 9999px;
+}
 
-  /* ── Shadows ────────────────────────────────────────────────── */
-  --shadow-sm:    0 1px 3px rgba(0,0,0,0.5);
-  --shadow-md:    0 4px 16px rgba(0,0,0,0.6);
-  --shadow-lg:    0 8px 32px rgba(0,0,0,0.7);
-  --shadow-glow:  0 0 40px rgba(232,51,10,0.25);
-  --shadow-glow-sm: 0 0 20px rgba(232,51,10,0.15);
-  --shadow-cyan:  0 0 30px rgba(0,212,255,0.2);
-
-  /* ── Spacing & Radius ───────────────────────────────────────── */
-  --radius-sm:    4px;
-  --radius-md:    8px;
-  --radius-lg:    12px;
-  --radius-xl:    20px;
-  --radius-full:  9999px;
-
-  /* ── Z-index Scale ──────────────────────────────────────────── */
-  --z-below:      -1;
-  --z-base:       0;
-  --z-elevated:   10;
-  --z-dropdown:   100;
-  --z-sticky:     200;
-  --z-overlay:    300;
-  --z-modal:      400;
-  --z-cursor:     9999;
+/* Dark theme */
+[data-theme="dark"] {
+  --color-bg:             #141210;  /* warm brown-black */
+  --color-bg-elevated:    #1C1917;
+  --color-bg-subtle:       #242019;
+  --color-text:            #F0EBE4;  /* warm off-white */
+  --color-text-secondary:  #9A9390;
+  --color-text-tertiary:   #5A5450;
+  --color-border:          #2C2825;
+  --color-border-strong:   #3C3733;
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md:   0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,0.5);
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.3);
 }
 ```
 
 ---
 
-## ✍️ TYPOGRAPHY SYSTEM
+## TYPOGRAPHY
 
-### Font Stack
 ```
-Display/Hero   : "Bebas Neue"       — bold, condensed, maximum impact
-                 Gunakan untuk: nama Arsenius, hero headline, section numbers
-                 Size: 6rem–10rem pada desktop, 4rem–6rem mobile
+Display/Hero   : Bebas Neue  — ONLY for hero name "ARSENIUS AUDLEY"
+                 Size: clamp(5rem, 12vw, 10rem)
 
-Heading        : "Space Grotesk"    — technical, modern, authoritative
-                 Gunakan untuk: section titles (H2), card titles (H3), nav links
-                 Size: 2rem–3.5rem (H2), 1.25rem–1.75rem (H3)
+Heading        : Playfair Display — section titles, pull quotes
+                 Style: mix normal + italic deliberately
+                 Example: "Let's build <em>something</em> together."
+                 Size: 2rem–3.5rem
 
-Body           : "DM Sans"          — clean, friendly, high legibility
-                 Gunakan untuk: paragraf, descriptions, semua text panjang
-                 Size: 1rem (16px) base, line-height 1.6–1.7
+Body           : DM Sans — semua text panjang, nav, UI labels
+                 Weights: 400 regular, 500 medium, 600 semibold
 
-Mono/Code      : "JetBrains Mono"   — untuk code snippets, tech labels, badges
-                 Size: 0.875rem–1rem
-
-Accent/Italic  : "Instrument Serif" italic — elegan, humanist
-                 Gunakan untuk: quotes, section eyebrow labels, subtle accents
-                 Size: 1rem–1.25rem
-```
-
-### next/font Setup (taruh di src/app/layout.tsx)
-```typescript
-import { Space_Grotesk, DM_Sans, JetBrains_Mono, Instrument_Serif } from 'next/font/google';
-import localFont from 'next/font/local';
-
-const bebasNeue = localFont({
-  src: '../public/fonts/BebasNeue-Regular.woff2',
-  variable: '--font-display',
-  display: 'swap',
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-heading',
-  display: 'swap',
-});
-
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  variable: '--font-body',
-  display: 'swap',
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  display: 'swap',
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ['latin'],
-  weight: '400',
-  style: ['normal', 'italic'],
-  variable: '--font-accent',
-  display: 'swap',
-});
-```
-
-### Typography Scale (globals.css)
-```css
-/* Apply font variables */
-body {
-  font-family: var(--font-body), sans-serif;
-  font-size: 1rem;
-  line-height: 1.65;
-  color: var(--color-text-primary);
-  background-color: var(--color-bg);
-}
-
-.font-display  { font-family: var(--font-display), sans-serif; }
-.font-heading  { font-family: var(--font-heading), sans-serif; }
-.font-mono     { font-family: var(--font-mono), monospace; }
-.font-accent   { font-family: var(--font-accent), serif; font-style: italic; }
-
-/* Type scale */
-.text-hero     { font-size: clamp(4rem, 10vw, 9rem); line-height: 0.92; letter-spacing: -0.02em; }
-.text-display  { font-size: clamp(3rem, 7vw, 6rem);  line-height: 0.95; letter-spacing: -0.01em; }
-.text-h1       { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.1; }
-.text-h2       { font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.2; }
-.text-h3       { font-size: clamp(1.25rem, 2vw, 1.75rem); line-height: 1.3; }
-.text-body-lg  { font-size: 1.125rem; line-height: 1.7; }
-.text-body     { font-size: 1rem; line-height: 1.65; }
-.text-sm       { font-size: 0.875rem; line-height: 1.6; }
-.text-xs       { font-size: 0.75rem; line-height: 1.5; letter-spacing: 0.05em; }
-.text-label    { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; }
+Mono/Code      : JetBrains Mono — tech tags, labels
+                 Size: 0.75rem–0.8rem
 ```
 
 ---
 
-## 🎬 MOTION SYSTEM
-
-### Prinsip Animasi
-1. **Purposeful** — setiap animasi punya alasan (guide attention, signal state, provide delight)
-2. **Snappy tapi smooth** — durasi pendek (150–400ms) untuk responsiveness
-3. **Stagger = rhythm** — elements muncul berurutan, bukan serentak
-4. **Reduced motion respected** — semua animasi punya fallback
+## ANIMASI
 
 ### Shared Variants (src/lib/animations.ts)
+
 ```typescript
 import { Variants } from 'framer-motion';
 
 export const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
-  },
-};
-
-export const fadeIn: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.4 } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
 export const staggerContainer: Variants = {
   hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
-  },
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
 };
 
-export const scaleIn: Variants = {
-  hidden: { opacity: 0, scale: 0.92 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
-  },
-};
-
-export const slideInLeft: Variants = {
-  hidden: { opacity: 0, x: -40 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
-  },
-};
-
-export const slideInRight: Variants = {
-  hidden: { opacity: 0, x: 40 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
-  },
-};
-
-// Untuk char-by-char text reveal
-export const charReveal: Variants = {
-  hidden: { opacity: 0, y: '100%' },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.04,
-      duration: 0.4,
-      ease: [0.25, 0.46, 0.45, 0.94],
-    },
-  }),
-};
-
-// Page transition
-export const pageTransition: Variants = {
-  initial: { opacity: 0, y: 8 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.25, ease: 'easeIn' } },
-};
-
-// Viewport trigger helper
-export const viewportConfig = {
-  once: true,
-  margin: '-80px',
-};
-```
-
-### Reduced Motion Pattern (WAJIB di setiap animated component)
-```typescript
-import { useReducedMotion } from 'framer-motion';
-
-export function AnimatedSection({ children }: { children: React.ReactNode }) {
-  const prefersReduced = useReducedMotion();
-
-  return (
-    <motion.div
-      variants={prefersReduced ? {} : fadeInUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={viewportConfig}
-    >
-      {children}
-    </motion.div>
-  );
-}
-```
-
-### Loading Screen Sequence
-```
-0ms     : Loading screen muncul (bg #080808)
-0-800ms : SVG path "A" draw animation (stroke-dashoffset 0 → full length)
-800ms   : "A" fill fade in (#E8330A)
-1200ms  : Loading screen fade out (opacity 1 → 0, pointer-events none)
-1500ms  : Site content mulai reveal
-1500ms  : NoiseOverlay fade in
-1600ms  : Hero headline chars reveal (stagger 0.04s per char)
-2000ms  : Sub-tagline fade in + slide up
-2300ms  : CTA buttons bounce in
-2500ms  : 3D scene / hero visual fade in
-```
-
-### Scroll-driven Animations
-```typescript
-// Di HeroSection — parallax
-const { scrollYProgress } = useScroll();
-const y = useTransform(scrollYProgress, [0, 1], [0, -200]);
-const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
-// Di setiap Section — trigger on viewport entry
-<motion.div
-  initial="hidden"
-  whileInView="visible"
-  viewport={{ once: true, margin: '-80px' }}
-  variants={staggerContainer}
->
+export const viewportConfig = { once: true, margin: '-80px' };
 ```
 
 ---
 
-## 🧩 COMPONENT SPECIFICATIONS
+## SECTION-SPECIFIC SPECS
 
-### Button Component (ui/Button.tsx)
-```
-Variants:
-  primary   → bg #E8330A, white text, glow shadow on hover
-  secondary → outlined, border #E8330A, transparent bg
-  ghost     → no border, subtle hover bg
+### Navbar
+- "A." logo — DM Sans 600, color primary
+- Nav links — DM Sans 400, text-secondary, hover text-primary
+- Theme toggle — sun/moon icon, rotate 180deg on toggle
+- "Let's talk →" — plain text link, NOT button, primary color
 
-Sizes: sm | md | lg
+### Hero
+- Available indicator: JetBrains Mono + blinking sage dot
+- Name: Bebas Neue clamp(5rem, 12vw, 10rem), "AUDLEY" indented
+- Role: "Fullstack Developer &" + "ML Engineer" (Playfair italic, primary)
+- CTA: text links with animated → arrows
+- Background: warm atmosphere circle (400px, primary-muted, blur 80px)
+- NO 3D, NO particles
 
-Magnetic effect: cursor tracking dengan useMousePosition hook
-  - Element moves max 8px mengikuti cursor saat di-hover
-  - Smooth lerp dengan requestAnimationFrame
+### About
+- 2-column: photo (40%) + bio (55%)
+- Photo: rounded-xl, hover scale(1.02), status pill below
+- Heading: Playfair Display "The human behind the code."
 
-Glow effect: box-shadow 0 0 30px rgba(232,51,10,0.4) on hover
-Loading state: spinner icon replaces text (untuk contact form)
-```
+### Skills
+- 2-column: header (sticky) + tag clouds
+- Tags: pill-shaped, free-floating, NO cards
+- Category accent colors on hover
 
-### Card Component (ui/Card.tsx)
-```
-Variants:
-  default  → bg #111111, border #222222, hover border #333333
-  featured → bg #111111, border #E8330A/40, subtle red glow
-  glass    → backdrop-blur, semi-transparent bg
+### Projects
+- Alternating horizontal cards
+- border-radius: var(--radius-xl)
+- hover: shadow-lg + translateY(-4px)
+- Image: 45%, Content: 55%
 
-Hover state:
-  - border-color → --color-border-bright
-  - transform: translateY(-4px)
-  - transition: 200ms ease
+### Experience
+- Clean open timeline, NO cards
+- Year: Bebas Neue, Dot: primary circle
+- Single column, max-width 680px
 
-Project card specifically:
-  - Image dengan overflow hidden, hover scale 1.05
-  - Gradient overlay on image bottom untuk text legibility
-  - Tech stack icons fade in on hover (max 5, +N more)
-```
+### Certifications
+- 3-column grid, filter tabs
+- Card: border-radius var(--radius-xl)
 
-### Badge Component (ui/Badge.tsx)
-```
-Variants:
-  default   → #1A1A1A bg, #888 text, #333 border
-  primary   → #2A0A02 bg, #E8330A text, #E8330A/30 border
-  accent    → #001A22 bg, #00D4FF text, #00D4FF/30 border
-  success   → dark green bg, green text
-  
-Usage: tech stack labels, category tags, status indicators
-Font: JetBrains Mono, 0.75rem
-```
-
-### Navbar (layout/Navbar.tsx)
-```
-Default state:  transparent background
-Scrolled state: backdrop-blur(20px) + bg rgba(8,8,8,0.8) + border-bottom 1px #222
-Scroll behavior: hide on scroll DOWN (y: -80px), show on scroll UP (y: 0)
-Active link:    layoutId animated underline slides between links on hover
-
-Content:
-  Left:  Logo "A." — Bebas Neue, 1.5rem, --color-primary
-  Center: Nav links — Space Grotesk, 0.9rem, letter-spacing 0.02em
-  Right:  "Hire Me" button (primary variant, sm size)
-
-Mobile (<768px):
-  Hamburger icon (3 lines → X animation)
-  Full-screen overlay menu
-  Links staggered entry (stagger 0.08s)
-  Social links at bottom
-```
-
-### Custom Cursor (shared/CustomCursor.tsx)
-```
-Structure:
-  - Outer ring: 32px circle, border 1px #E8330A/60, mix-blend-mode: difference
-  - Inner dot: 6px circle, bg #E8330A, fill
-
-Behavior:
-  - Smooth lag: outer ring follows with lerp 0.12
-  - Inner dot follows exactly (no lag)
-  - Hover interactive elements: outer ring scale(2), opacity 0.6
-  - Hover links/buttons: outer ring becomes filled, inner dot disappears
-  - Click: brief scale(0.8) flash
-
-Hide default cursor: cursor: none on body
-Show only on desktop (useMediaQuery > 768px)
-```
-
-### NoiseOverlay (REMOVED)
-```
-Note: NoiseOverlay has been removed from the design.
-Rationale: Subtle film grain effects felt generic and "AI startup aesthetic".
-The design now relies on bold typography and geometric shapes for visual interest.
-```
+### Contact
+- 2-column: headline (45%) + form (55%)
+- Headline: Playfair Display with italic word
+- Submit: pill button (border-radius-full)
 
 ---
 
-## 📐 LAYOUT & SPACING
-
-### Breakpoints
-```
-Mobile  : < 640px   → stack all, 16px horizontal padding
-Tablet  : 640-1024px → 2 cols where applicable, 24px padding
-Desktop : 1024-1280px → full layout, 32px padding
-Wide    : > 1280px   → max-width 1440px, auto margins, 48px padding
-```
-
-### Section Spacing
-```
-Section padding vertical: clamp(5rem, 10vw, 8rem) top dan bottom
-Section inner gap: 3rem–5rem between major elements
-Grid gap: 1.5rem (mobile) → 2rem (tablet) → 2.5rem (desktop)
-```
-
-### Grid System
-```
-Homepage sections: max-width 1200px, centered, px-6 (mobile) → px-8 (desktop)
-Project bento grid:
-  - 1 col (mobile < 640px)
-  - 2 col (tablet)
-  - 3 col (desktop) dengan featured project spanning 2 cols
-
-Skills section: flex-wrap orbital layout atau masonry
-Experience: single column timeline, max-width 700px, centered
-```
-
----
-
-## 🖥️ SECTION-SPECIFIC SPECS
-
-### Hero Section
-```
-Layout: full-viewport-height, flex, items-center
-  Desktop: asymmetric grid — 70% text left, 30% info card right
-  Mobile: stack — text with geometric shapes as background
-
-Text column:
-  [Section Marker] : "Portfolio" — JetBrains Mono, section-marker style
-  [Name]           : Bebas Neue, clamp(4.5rem, 12vw, 10rem), line-height 0.88
-                     "ARSENIUS" (white) + "AUDLEY" (red #E8330A) — two lines
-  [Tagline]         : Instrument Serif italic, 1.25rem, --color-text-secondary
-                     "Fullstack Developer & ML Engineer"
-  [Divider]        : ed-line class — gradient line red → transparent
-  [Description]    : DM Sans, 1.1rem, --color-text-secondary, max-width 460px
-  [CTAs]           : flex gap-4
-                     Primary: "View My Work" → #projects
-                     Secondary: "Download CV" → /cv.pdf
-  [Socials]        : GitHub | LinkedIn | Email — icon only, 20px, gap-5
-
-Info card (right side desktop only):
-  ed-box class — border with corner accent
-  Content: "Based in Surabaya, Indonesia" + availability status
-
-Geometric elements (CSS-based):
-  - Large red triangle (#E8330A) — top right, 600-800px
-  - Cyan accent line — diagonal, subtle
-  - Small red square — bottom left accent
-  - Angular shape — secondary geometric
-
-Background:
-  Solid #080808 (no gradients)
-  NO 3D effects (ParticleField, FloatingGeometry removed)
-  NO NoiseOverlay
-```
-
-### Skills Section
-```
-Layout: tidak boleh list biasa. Gunakan salah satu:
-  Option A: Kategori cards dalam grid 2-3 kolom, tiap card berisi skill badges
-  Option B: Orbital/circular layout dengan kategori di tengah
-  Option C: Horizontal scrollable lanes per kategori
-
-Animasi: skills muncul dengan scale 0→1 stagger saat masuk viewport
-Hover: badge glow sesuai warna kategori
-```
-
-### Projects Section (Bento Grid)
-```
-Grid structure desktop:
-  [BAKI — featured, col-span-2]  [FitBuddy AI — featured, col-span-1]
-  [Digital Twin — col-span-1]    [Healthylicious] [41-Card Game]
-
-Featured card height: ~360px
-Regular card height: ~280px
-
-On hover (card):
-  - image scale 1.05 (transition 300ms)
-  - border: --color-border-bright
-  - translateY(-4px)
-  - tech stack icons slide up and appear
-
-Project detail overlay on hover (optional):
-  - Quick preview modal dengan AnimatePresence
-  - Full detail di /projects/[slug]
-```
-
-### Experience Timeline
-```
-Layout: vertical line (2px, gradient #E8330A top → #444 bottom)
-        entries di kanan dari line
-
-Per entry:
-  [Dot]     : 12px circle, bg #E8330A, ring 4px #E8330A/20
-  [Year]    : JetBrains Mono, --color-accent, 0.875rem
-  [Title]   : Space Grotesk bold, 1.1rem
-  [Org]     : DM Sans, --color-text-secondary
-  [Tags]    : optional, small badges untuk tech used
-
-Animation: line draws dari atas ke bawah saat scroll (pathLength 0→1)
-```
-
-### Contact Section
-```
-Layout: 2-col desktop
-  Left:  Large headline + social links + direct email
-  Right: Form
-
-Headline:
-  "Let's Build\nSomething\nTogether." — Bebas Neue, 4rem
-
-Form fields:
-  Name, Email, Subject, Message (textarea)
-  All inputs: bg #111, border #222, focus border #E8330A, radius 8px
-  Submit: primary Button dengan loading state
-
-Success state: form replaced dengan animated checkmark + "Message sent!"
-Error state: inline error messages via Zod validation
-```
-
----
-
-## 🎭 3D SPECIFICATIONS (React Three Fiber)
-
-### Kondisi Loading
-```typescript
-// WAJIB: Three.js hanya di desktop
-const { isMobile } = useMediaQuery();
-
-if (isMobile) {
-  return <CSSFallbackVisual />; // pure CSS animation sebagai pengganti
-}
-
-return (
-  <Suspense fallback={null}>
-    <Canvas />
-  </Suspense>
-);
-```
-
-### ParticleField (hero background, desktop only)
-```
-Particles : 80–120 points, random positions dalam sphere radius 15
-Color     : #E8330A particles (60%) + #00D4FF particles (40%)
-Size      : 0.02–0.06 units, random
-Movement  : slow rotation seluruh field + drift
-Mouse     : subtle repulsion effect dari center
-Performance: dispose geometry & material on unmount
-```
-
-### FloatingGeometry (hero visual atau About section)
-```
-Objects:
-  - Icosahedron wireframe, radius 2, #E8330A, rotation
-  - Torus wireframe, radius 1.5, tube 0.3, #00D4FF/60, counter-rotation
-  - Small floating spheres, scattered
-
-Lighting: ambient + point light di atas kiri (#E8330A tint)
-Camera: PerspectiveCamera, fov 60, z: 8
-Controls: NO OrbitControls — camera fixed, objects rotate
-```
-
----
-
-## ♿ ACCESSIBILITY REQUIREMENTS
-
-```css
-/* Focus visible — custom ring */
-:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 3px;
-  border-radius: var(--radius-sm);
-}
-
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-```
-
-**Checklist wajib:**
-- Color contrast ≥ 4.5:1 untuk body text (verify dengan tools)
-- Semua icon-only buttons punya `aria-label`
-- Three.js canvas punya `role="img"` + `aria-label="Decorative 3D background"`
-- Keyboard navigable: semua interactive elements bisa di-Tab
-- Skip navigation link: `<a href="#main-content">Skip to main content</a>`
-- `lang="en"` di root `<html>`
-- `alt` text descriptive untuk semua `next/image`
-
----
-
-## 📱 MOBILE-SPECIFIC RULES
+## ANTI-PATTERNS
 
 ```
-Three.js     : DISABLED (ganti dengan CSS animation)
-Custom cursor: DISABLED (touch device, tidak relevan)
-Parallax     : DISABLED atau dikurangi drastis (performance)
-Font sizes   : gunakan clamp() untuk semua display text
-Touch targets: minimum 44×44px untuk semua interactive elements
-Hover states : transform ke tap states
+❌ Hardcode hex colors — always use CSS variables
+❌ Bebas Neue outside hero name
+❌ Cold black (#080808) backgrounds
+❌ Neon cyan (#00D4FF) accent
+❌ Glow box-shadows
+❌ Uppercase Bebas Neue section headings
+❌ 3D in hero
+❌ Magnetic button effects on warm editorial buttons
 ```
-
----
-
-*File ini adalah source of truth untuk semua keputusan design.*
-*Update sini jika ada perubahan design direction.*
