@@ -1,10 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FlipCard } from "@/components/shared/FlipCard";
 
 const projects = [
   {
@@ -79,10 +80,12 @@ function ProjectCard({
   project,
   index,
   prefersReduced,
+  totalCount,
 }: {
   project: (typeof projects)[number];
   index: number;
   prefersReduced: boolean | null;
+  totalCount: number;
 }) {
   const isEven = index % 2 === 1;
 
@@ -98,18 +101,20 @@ function ProjectCard({
       }}
       className="relative"
     >
-      <Link
-        href={`/projects/${project.slug}`}
-        className={cn(
-          "group relative block",
-          "bg-[var(--color-bg-elevated)]",
-          "border border-[var(--color-border)]",
-          "rounded-[var(--radius-xl)]",
-          "transition-all duration-300",
-          "hover:shadow-[var(--shadow-lg)]",
-          "hover:-translate-y-1",
-        )}
-      >
+      <FlipCard
+        front={
+          <Link
+            href={`/projects/${project.slug}`}
+            className={cn(
+              "group relative block",
+              "bg-[var(--color-bg-elevated)]",
+              "border border-[var(--color-border)]",
+              "rounded-[var(--radius-xl)]",
+              "transition-all duration-300",
+              "hover:shadow-[var(--shadow-lg)]",
+              "hover:-translate-y-1",
+            )}
+          >
         <div className={cn(
           "flex flex-col sm:flex-row",
           "overflow-hidden rounded-[var(--radius-xl)]",
@@ -126,7 +131,7 @@ function ProjectCard({
                 project.gradientClass,
                 "rounded-t-[var(--radius-xl)] sm:rounded-none",
                 isEven ? "sm:rounded-tr-[var(--radius-xl)]" : "sm:rounded-tl-[var(--radius-xl)]",
-                index === projects.length - 1 ? (
+                index === totalCount - 1 ? (
                   isEven ? "sm:rounded-br-[var(--radius-xl)]" : "sm:rounded-bl-[var(--radius-xl)]"
                 ) : "",
               )}
@@ -251,13 +256,59 @@ function ProjectCard({
             </div>
           </div>
         </div>
-      </Link>
+          </Link>
+        }
+        back={
+          <div className="bg-[var(--color-bg-inverse)] rounded-[var(--radius-xl)] p-6 sm:p-8 flex flex-col justify-between h-full border border-[var(--color-border)]">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-widest text-[var(--color-text-tertiary)] mb-3">
+                My Role
+              </p>
+              <p className="font-body text-sm text-[var(--color-text-secondary)] leading-relaxed mb-4">
+                Full-stack development & ML integration
+              </p>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {project.techStack.map((tech) => (
+                  <TechPill key={tech} tech={tech} />
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-4 mt-auto pt-4">
+              <a
+                href={`/projects/${project.slug}`}
+                className="font-mono text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors"
+              >
+                View project →
+              </a>
+              <button
+                onClick={(e) => { e.stopPropagation(); }}
+                className="font-mono text-xs text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] transition-colors ml-auto"
+              >
+                ← Back
+              </button>
+            </div>
+          </div>
+        }
+      />
     </motion.div>
   );
 }
 
 export function ProjectsSection() {
   const prefersReduced = useReducedMotion();
+  const [activeSkillFilter, setActiveSkillFilter] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      setActiveSkillFilter((e as CustomEvent<{skill: string}>).detail.skill);
+    };
+    document.addEventListener("skillfilter", handler);
+    return () => document.removeEventListener("skillfilter", handler);
+  }, []);
+
+  const filteredProjects = activeSkillFilter
+    ? projects.filter((p) => p.techStack.includes(activeSkillFilter))
+    : projects;
 
   return (
     <section
@@ -287,12 +338,13 @@ export function ProjectsSection() {
 
         {/* Projects list — alternating horizontal cards */}
         <div className="flex flex-col gap-6 sm:gap-8">
-          {projects.map((project, index) => (
+          {filteredProjects.map((project, index) => (
             <ProjectCard
               key={project.slug}
               project={project}
               index={index}
               prefersReduced={prefersReduced}
+              totalCount={filteredProjects.length}
             />
           ))}
         </div>

@@ -4,6 +4,7 @@ export { SplitText, CharText } from "./SplitText";
 export { MagneticElement } from "./MagneticElement";
 export { ScrollProgress } from "./ScrollProgress";
 export { TiltCard } from "./TiltCard";
+export { FlipCard } from "./FlipCard";
 export { BackToTop } from "./BackToTop";
 export { ToastContainer, toast } from "./Toast";
 export { AnimatedCounter } from "./AnimatedCounter";
