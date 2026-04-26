@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useMousePosition } from "@/hooks/useMousePosition";
 
 export function CustomCursor() {
   const { x, y } = useMousePosition();
-  const cursorRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
@@ -16,9 +15,7 @@ export function CustomCursor() {
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
-
-    // Only run on desktop
+    if (!mounted || typeof window === "undefined") return;
     if (window.innerWidth < 768) return;
 
     const handleHover = (e: MouseEvent) => {
@@ -45,53 +42,33 @@ export function CustomCursor() {
     };
   }, [mounted]);
 
-  // Don't render on server or mobile
-  if (!mounted) return null;
+  if (!mounted || typeof window === "undefined") return null;
+  if (typeof window !== "undefined" && window.innerWidth < 768) return null;
 
   return (
-    <>
-      {/* Outer ring */}
-      <motion.div
-        ref={cursorRef}
-        className="pointer-events-none fixed top-0 left-0 z-[var(--z-cursor)] hidden md:block"
-        animate={{
-          x: x - 16,
-          y: y - 16,
-          scale: isClicking ? 0.8 : isHovering ? 2 : 1,
-          opacity: isHovering ? 0.6 : 1,
+    <motion.div
+      className="pointer-events-none fixed top-0 left-0 z-[var(--z-cursor)] hidden md:block"
+      animate={{
+        x: x - 4,
+        y: y - 4,
+        scale: isClicking ? 0.8 : isHovering ? 1.5 : 1,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 400,
+        damping: 28,
+        mass: 0.5,
+      }}
+    >
+      <div
+        className="w-2 h-2 rounded-full"
+        style={{
+          backgroundColor: isHovering
+            ? "var(--color-primary)"
+            : "var(--color-primary)",
+          opacity: isHovering ? 1 : 0.7,
         }}
-        transition={{
-          type: "spring",
-          stiffness: 500,
-          damping: 28,
-          mass: 0.5,
-        }}
-      >
-        <div
-          className={`
-            w-8 h-8 rounded-full border transition-colors duration-200
-            ${
-              isHovering
-                ? "bg-[var(--color-primary)] border-[var(--color-primary)]"
-                : "bg-transparent border-[rgba(232,51,10,0.6)]"
-            }
-          `}
-          style={{ mixBlendMode: "difference" }}
-        />
-      </motion.div>
-
-      {/* Inner dot */}
-      <motion.div
-        className="pointer-events-none fixed top-0 left-0 z-[var(--z-cursor)] hidden md:block"
-        animate={{
-          x: x - 3,
-          y: y - 3,
-          scale: isClicking ? 0.8 : isHovering ? 0 : 1,
-        }}
-        transition={{ duration: 0.1 }}
-      >
-        <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]" />
-      </motion.div>
-    </>
+      />
+    </motion.div>
   );
 }
