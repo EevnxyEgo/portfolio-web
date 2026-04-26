@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { NoiseOverlay } from "@/components/shared/NoiseOverlay";
 import { BackToTop } from "@/components/shared/BackToTop";
 import { ToastContainer } from "@/components/shared/Toast";
+import { EasterEggs } from "@/components/shared/EasterEggs";
 
 export default function SiteLayout({
   children,
@@ -17,6 +18,7 @@ export default function SiteLayout({
       <Footer />
       <BackToTop />
       <ToastContainer />
+      <EasterEggs />
     </>
   );
 }

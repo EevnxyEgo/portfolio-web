@@ -52,6 +52,7 @@ export function Navbar() {
             {/* Logo */}
             <Link
               href="/"
+              data-logo
               className="font-dm-sans font-semibold text-base text-[var(--color-primary)] hover:text-[var(--color-primary-glow)] transition-colors"
             >
               A.

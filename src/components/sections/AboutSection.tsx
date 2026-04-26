@@ -1,13 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { viewportConfig } from "@/lib/animations";
+import { useState } from "react";
 
 export function AboutSection() {
   const prefersReduced = useReducedMotion();
+  const [showBubble, setShowBubble] = useState(false);
+  const [isWiggling, setIsWiggling] = useState(false);
 
   return (
     <section
@@ -42,7 +44,18 @@ export function AboutSection() {
               <motion.div
                 whileHover={prefersReduced ? {} : { scale: 1.02 }}
                 transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="relative aspect-[3/4] w-full rounded-[var(--radius-xl)] overflow-hidden bg-[var(--color-bg-elevated)] cursor-default"
+                animate={
+                  isWiggling
+                    ? { rotate: [-5, 5, -3, 3, 0], transition: { duration: 0.5 } }
+                    : {}
+                }
+                onClick={() => {
+                  setIsWiggling(true);
+                  setShowBubble(true);
+                  setTimeout(() => setIsWiggling(false), 500);
+                  setTimeout(() => setShowBubble(false), 4000);
+                }}
+                className="relative aspect-[3/4] w-full rounded-[var(--radius-xl)] overflow-hidden bg-[var(--color-bg-elevated)] cursor-pointer"
               >
                 {/* Gradient placeholder when no photo */}
                 <div
@@ -69,6 +82,19 @@ export function AboutSection() {
                     AA
                   </span>
                 </div>
+                {/* Speech bubble */}
+                <AnimatePresence>
+                  {showBubble && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8, y: 8 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-[var(--color-bg-inverse)] text-[var(--color-text-inverse)] px-4 py-2 rounded-xl font-body text-sm shadow-lg whitespace-nowrap z-10"
+                    >
+                      That&apos;s me! Photo coming soon 📸
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
 
               {/* Warm decorative circle accent */}
