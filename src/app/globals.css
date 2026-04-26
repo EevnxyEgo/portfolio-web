@@ -509,6 +509,12 @@ body {
   animation: blink 2s ease-in-out infinite;
 }
 
+/* ── Marquee Animation ─────────────────────────────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-33.333%); }
+}
+
 /* ── Warm Atmosphere Circle (hero background) ────────────────────────────────── */
 .warm-atmosphere {
   position: absolute;
@@ -580,23 +586,23 @@ body {
 
 /* ── Project Gradient Placeholders ───────────────────────────────────────────── */
 .project-gradient-baki {
-  background: linear-gradient(135deg, #1A0A08 0%, #3D1A14 100%);
+  background: linear-gradient(135deg, #1a0505 0%, #4a1010 40%, #8B2020 100%);
 }
 
 .project-gradient-fitbuddy {
-  background: linear-gradient(135deg, #0A1628 0%, #1A2E4A 100%);
+  background: linear-gradient(135deg, #050a1a 0%, #0d1f4a 40%, #1a3580 100%);
 }
 
 .project-gradient-digital {
-  background: linear-gradient(135deg, #080D1A 0%, #0D1F3C 100%);
+  background: linear-gradient(135deg, #050a14 0%, #0a1428 40%, #0d2050 100%);
 }
 
 .project-gradient-healthy {
-  background: linear-gradient(135deg, #1A2808 0%, #2D4A14 100%);
+  background: linear-gradient(135deg, #081a08 0%, #143d14 40%, #1f6020 100%);
 }
 
 .project-gradient-cards {
-  background: linear-gradient(135deg, #0A1A0A 0%, #1A3020 100%);
+  background: linear-gradient(135deg, #0a1205 0%, #1a2d08 40%, #2d4d10 100%);
 }
 
 /* ── Accessibility ───────────────────────────────────────────────────────────── */

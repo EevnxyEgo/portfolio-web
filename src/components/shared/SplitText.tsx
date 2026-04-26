@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import type { Variants } from "framer-motion";
+import type { CSSProperties } from "react";
 
 interface SplitTextProps {
   text?: string;
@@ -10,6 +11,7 @@ interface SplitTextProps {
   delay?: number;
   staggerDelay?: number;
   variants?: Variants;
+  style?: CSSProperties;
 }
 
 export function SplitText({
@@ -19,6 +21,7 @@ export function SplitText({
   delay = 0,
   staggerDelay = 0.04,
   variants,
+  style,
 }: SplitTextProps) {
   const prefersReduced = useReducedMotion();
   const words = text.split(" ");
@@ -39,11 +42,11 @@ export function SplitText({
   const activeVariants = variants || defaultVariants;
 
   if (prefersReduced) {
-    return <Component className={className}>{text}</Component>;
+    return <Component className={className} style={style}>{text}</Component>;
   }
 
   return (
-    <Component className={`inline ${className}`} aria-label={text}>
+    <Component className={`inline ${className}`} style={style} aria-label={text}>
       {words.map((word, wordIndex) => (
         <span
           key={wordIndex}

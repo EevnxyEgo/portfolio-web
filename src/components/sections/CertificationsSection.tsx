@@ -96,24 +96,17 @@ export function CertificationsSection() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Section header — left-aligned */}
         <div className="mb-12">
-          <motion.p
-            initial={prefersReduced ? false : { opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={viewportConfig}
-            transition={{ duration: 0.4 }}
-            className="font-mono text-xs tracking-[0.12em] uppercase text-[var(--color-text-tertiary)] mb-3"
+          <p className="section-eyebrow mb-3">Credentials</p>
+          <h2
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(2rem, 5vw, 3rem)",
+              lineHeight: 1.1,
+              color: "var(--color-text)",
+            }}
           >
-            Credentials
-          </motion.p>
-          <motion.h2
-            initial={prefersReduced ? false : { opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={viewportConfig}
-            transition={{ duration: 0.5, delay: 0.05 }}
-            className="font-display text-[clamp(2.5rem,5vw,4rem)] leading-none tracking-tight"
-          >
-            CERTIFICATIONS
-          </motion.h2>
+            Credentials.
+          </h2>
         </div>
 
         {/* Filter tabs — pill style */}

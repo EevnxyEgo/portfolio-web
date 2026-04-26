@@ -53,8 +53,32 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center overflow-hidden"
+      className="relative min-h-[100svh] flex items-center overflow-hidden"
     >
+      {/* Marquee ticker */}
+      <div
+        className="absolute top-0 left-0 right-0 overflow-hidden h-8 flex items-center border-b border-[var(--color-border)]"
+        style={{ background: "var(--color-bg)", opacity: 0.7 }}
+        aria-hidden="true"
+      >
+        <div
+          style={{
+            display: "flex",
+            animation: "marquee 30s linear infinite",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className="font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[var(--color-text-tertiary)] px-8"
+            >
+              FULLSTACK &nbsp;&middot;&nbsp; ML ENGINEER &nbsp;&middot;&nbsp; ITS SURABAYA &nbsp;&middot;&nbsp; BANGKIT ALUMNI &nbsp;&middot;&nbsp; AVAILABLE FOR WORK &nbsp;&middot;&nbsp; OPEN TO OPPORTUNITIES &nbsp;&middot;&nbsp;
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* Background: warm atmosphere circle top-right */}
       <div
         className="warm-atmosphere"
@@ -92,8 +116,7 @@ export function HeroSection() {
           <div className="overflow-hidden">
             {prefersReduced ? (
               <h1
-                className="font-display leading-none text-[clamp(5rem,12vw,10rem)] tracking-[-0.02em]"
-                style={{ fontFamily: "var(--font-display)" }}
+                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(4.5rem, 10vw, 9rem)" }}
               >
                 ARSENIUS
               </h1>
@@ -101,24 +124,24 @@ export function HeroSection() {
               <SplitText
                 text="ARSENIUS"
                 element="h1"
-                className="block leading-none tracking-[-0.02em]"
+                className="block leading-none"
+                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(4.5rem, 10vw, 9rem)" }}
                 staggerDelay={0.06}
                 delay={0.3}
               />
             )}
           </div>
 
-          {/* Name: AUDLEY (indented ~4rem) */}
+          {/* Name: AUDLEY (indented) */}
           <div
             className="overflow-hidden"
             style={{
-              paddingLeft: "clamp(2rem, 5vw, 4rem)",
+              paddingLeft: "clamp(1.5rem, 5vw, 5rem)",
             }}
           >
             {prefersReduced ? (
               <h1
-                className="font-display leading-none text-[clamp(5rem,12vw,10rem)] tracking-[-0.02em]"
-                style={{ fontFamily: "var(--font-display)" }}
+                style={{ paddingLeft: "clamp(1.5rem, 5vw, 5rem)", fontFamily: "var(--font-display)", fontSize: "clamp(4.5rem, 10vw, 9rem)" }}
               >
                 AUDLEY
               </h1>
@@ -126,7 +149,8 @@ export function HeroSection() {
               <SplitText
                 text="AUDLEY"
                 element="h1"
-                className="block leading-none tracking-[-0.02em]"
+                className="block leading-none"
+                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(4.5rem, 10vw, 9rem)" }}
                 staggerDelay={0.06}
                 delay={0.4}
               />
