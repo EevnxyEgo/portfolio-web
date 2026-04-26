@@ -1,4 +1,4 @@
-import { config, fields, collection } from "@keystatic/core";
+import { config, fields, collection, singleton } from "@keystatic/core";
 
 export default config({
   storage: {
@@ -84,6 +84,92 @@ export default config({
           defaultValue: "development",
         }),
         verified: fields.checkbox({ label: "Verified", defaultValue: true }),
+      },
+    }),
+  },
+  singletons: {
+    siteConfig: singleton({
+      label: "Site Configuration",
+      path: "src/content/site-config",
+      schema: {
+        heroAvailableText: fields.text({
+          label: "Hero — Available Status Text",
+          defaultValue: "Surabaya, Indonesia · Available for work",
+        }),
+        heroFirstName: fields.text({
+          label: "Hero — First Name",
+          defaultValue: "ARSENIUS",
+        }),
+        heroLastName: fields.text({
+          label: "Hero — Last Name",
+          defaultValue: "AUDLEY",
+        }),
+        heroRoleSans: fields.text({
+          label: "Hero — Role (sans part)",
+          defaultValue: "Fullstack Developer &",
+        }),
+        heroRoleSerif: fields.text({
+          label: "Hero — Role (serif part)",
+          defaultValue: "ML Engineer",
+        }),
+        heroDescription: fields.text({
+          label: "Hero — Description",
+          multiline: true,
+          defaultValue: "Building intelligent systems where web meets AI. ITS Surabaya graduate. Bangkit Academy ML alumnus.",
+        }),
+        aboutHeading: fields.text({
+          label: "About — Heading",
+          defaultValue: "The human behind the code.",
+        }),
+        aboutLocation: fields.text({
+          label: "About — Location",
+          defaultValue: "Surabaya, Indonesia",
+        }),
+        aboutAvailability: fields.select({
+          label: "About — Availability",
+          options: [
+            { label: "Available for work", value: "available" },
+            { label: "Open to opportunities", value: "open" },
+            { label: "Not available", value: "busy" },
+          ],
+          defaultValue: "available",
+        }),
+        contactHeadline1: fields.text({
+          label: "Contact — Headline 1",
+          defaultValue: "Let's build",
+        }),
+        contactHeadline2: fields.text({
+          label: "Contact — Headline 2 (italic)",
+          defaultValue: "something",
+        }),
+        contactHeadline3: fields.text({
+          label: "Contact — Headline 3",
+          defaultValue: "together.",
+        }),
+        contactSubtext: fields.text({
+          label: "Contact — Subtext",
+          multiline: true,
+          defaultValue: "Open for full-time roles and interesting collaborations. Currently in Surabaya, Indonesia.",
+        }),
+        contactEmail: fields.text({
+          label: "Contact — Email",
+          defaultValue: "arseniuswahyu@gmail.com",
+        }),
+        socialGithub: fields.text({
+          label: "Social — GitHub URL",
+          defaultValue: "https://github.com/EevnxyEgo",
+        }),
+        socialLinkedin: fields.text({
+          label: "Social — LinkedIn URL",
+          defaultValue: "https://linkedin.com/in/arsenius-audley-wahyu-djatmiko-7a8830251",
+        }),
+        showSkills: fields.checkbox({ label: "Show Skills Section", defaultValue: true }),
+        showExperience: fields.checkbox({ label: "Show Experience Section", defaultValue: true }),
+        showCertifications: fields.checkbox({ label: "Show Certifications Section", defaultValue: true }),
+        cvUrl: fields.text({
+          label: "CV — Download URL",
+          defaultValue: "/cv.pdf",
+        }),
       },
     }),
   },

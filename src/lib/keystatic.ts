@@ -1,8 +1,12 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { createReader } from "@keystatic/core/reader";
+import keystaticConfig from "../../keystatic.config";
 import type { Project } from "@/types/project";
 import type { Certification } from "@/types/certification";
+
+const reader = createReader(process.cwd(), keystaticConfig);
 
 const projectsDirectory = path.join(process.cwd(), "src/content/projects");
 const certificationsDirectory = path.join(
@@ -76,4 +80,9 @@ export function getAllProjectSlugs(): string[] {
   } catch {
     return [];
   }
+}
+
+export async function getSiteConfig() {
+  const config = await reader.singletons.siteConfig.read();
+  return config;
 }

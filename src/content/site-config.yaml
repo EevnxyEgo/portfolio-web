@@ -1,0 +1,20 @@
+heroAvailableText: "Surabaya, Indonesia · Available for work"
+heroFirstName: "ARSENIUS"
+heroLastName: "AUDLEY"
+heroRoleSans: "Fullstack Developer &"
+heroRoleSerif: "ML Engineer"
+heroDescription: "Building intelligent systems where web meets AI. ITS Surabaya graduate. Bangkit Academy ML alumnus."
+aboutHeading: "The human behind the code."
+aboutLocation: "Surabaya, Indonesia"
+aboutAvailability: "available"
+contactHeadline1: "Let's build"
+contactHeadline2: "something"
+contactHeadline3: "together."
+contactSubtext: "Open for full-time roles and interesting collaborations. Currently in Surabaya, Indonesia."
+contactEmail: "arseniuswahyu@gmail.com"
+socialGithub: "https://github.com/EevnxyEgo"
+socialLinkedin: "https://linkedin.com/in/arsenius-audley-wahyu-djatmiko-7a8830251"
+showSkills: true
+showExperience: true
+showCertifications: true
+cvUrl: "/cv.pdf"
