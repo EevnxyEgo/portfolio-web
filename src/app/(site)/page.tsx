@@ -3,7 +3,7 @@ import { LoadingScreen } from "@/components/layout/LoadingScreen";
 import {
   HeroSection,
   AboutSection,
-  SkillsSection,
+  LabSection,
   ProjectDeckSection,
   ExperienceSection,
   CertificationsSection,
@@ -26,7 +26,7 @@ export default async function HomePage() {
         location={siteConfig.aboutLocation}
         availability={siteConfig.aboutAvailability}
       />
-      <SkillsSection />
+      <LabSection />
       <ProjectDeckSection />
       <ExperienceSection />
       <CertificationsSection />

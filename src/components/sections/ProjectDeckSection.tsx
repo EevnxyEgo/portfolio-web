@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSpring, animated } from "@react-spring/web";
-import { useDrag } from "@use-gesture/react";
 import Link from "next/link";
 import { ExternalLink, FileText, ChevronLeft, ChevronRight } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
@@ -122,20 +120,29 @@ const projects: Project[] = [
   },
 ];
 
-// ── Card Colors ────────────────────────────────────────────────────────────────
+// ── Card Gradients ─────────────────────────────────────────────────────────────
 const cardGradients: Record<string, string> = {
-  "ml-ai": "linear-gradient(135deg, #E8330A 0%, #D97706 50%, #78350F 100%)",
-  "fullstack": "linear-gradient(135deg, #1E3A5F 0%, #2E5A8B 50%, #0D1B2A 100%)",
-  "3d": "linear-gradient(135deg, #4A1A7A 0%, #7B2D8E 50%, #2D0A4E 100%)",
-  "cv": "linear-gradient(135deg, #1A4A3A 0%, #2D7A5A 50%, #0A2A1A 100%)",
-  "mobile": "linear-gradient(135deg, #7A4A1A 0%, #B87A2D 50%, #4A2A0A 100%)",
+  "ml-ai": "linear-gradient(145deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)",
+  "fullstack": "linear-gradient(145deg, #0a0a0a 0%, #1a1a2e 50%, #0f3460 100%)",
+  "3d": "linear-gradient(145deg, #0a0a0a 0%, #1a1a2e 50%, #4a1a6b 100%)",
+  "cv": "linear-gradient(145deg, #0a0a0a 0%, #1a1a2e 50%, #1a4a3a 100%)",
+  "mobile": "linear-gradient(145deg, #0a0a0a 0%, #1a1a2e 50%, #7a4a1a 100%)",
 };
 
-// ── Card Component ────────────────────────────────────────────────────────────
+const accentColors: Record<string, string> = {
+  "ml-ai": "#00ff88",
+  "fullstack": "#00d4ff",
+  "3d": "#a855f7",
+  "cv": "#22d3ee",
+  "mobile": "#fb923c",
+};
+
+// ── Project Card Component ──────────────────────────────────────────────────────
 function ProjectCard({
   project,
   index,
   totalCards,
+  currentIndex,
   isCenter,
   isDimmed,
   onFlip,
@@ -144,153 +151,156 @@ function ProjectCard({
   project: Project;
   index: number;
   totalCards: number;
+  currentIndex: number;
   isCenter: boolean;
   isDimmed: boolean;
   onFlip: () => void;
   isFlipped: boolean;
 }) {
-  const [spring, api] = useSpring(() => ({
-    x: 0,
-    y: 0,
-    scale: 1,
-    opacity: 1,
-  }));
+  const [isHovered, setIsHovered] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const bind = useDrag(
-    ({ down, movement: [mx, my] }) => {
-      if (down) {
-        api.start({
-          x: mx,
-          y: my,
-          scale: 1.05,
-        });
-      } else {
-        if (Math.abs(mx) > 150 || Math.abs(my) > 150) {
-          api.start({
-            x: mx * 3,
-            y: my * 3,
-            scale: 0.8,
-            opacity: 0,
-          });
-        } else {
-          api.start({
-            x: 0,
-            y: 0,
-            scale: 1,
-            opacity: isDimmed ? 0.6 : 1,
-          });
-        }
-      }
-    },
-    {
-      from: () => [spring.x.get(), spring.y.get()],
-    }
-  );
+  const offsetX = isCenter ? 0 : index < totalCards / 2
+    ? -(totalCards / 2 - index) * 60
+    : (index - Math.floor(totalCards / 2)) * 60;
 
-  const rotation = isCenter ? 0 : index < totalCards / 2 ? -(totalCards - index) * 4 : (index - Math.floor(totalCards / 2)) * 4;
-  const offsetX = isCenter ? 0 : index < totalCards / 2 ? -(totalCards / 2 - index) * 80 : (index - Math.floor(totalCards / 2)) * 80;
+  const scale = isCenter ? 1 : 0.85;
+  const opacity = isDimmed ? 0.3 : isCenter ? 1 : 0.6;
+  const zIndex = isCenter ? 10 : totalCards - Math.abs(index - currentIndex);
 
+  const accent = accentColors[project.category] || "#00ff88";
   const gradient = cardGradients[project.category] || cardGradients.fullstack;
 
   return (
-    <animated.div
-      {...bind()}
+    <motion.div
+      ref={cardRef}
+      className="absolute cursor-pointer"
       style={{
-        x: spring.x,
-        y: spring.y,
-        scale: spring.scale,
-        opacity: spring.opacity,
-        touchAction: "none",
-        position: "absolute",
         left: "50%",
         top: "50%",
-        translateX: `calc(-50% + ${offsetX}px)`,
-        translateY: "-50%",
-        rotate: rotation,
-        cursor: "grab",
+        x: `calc(-50% + ${offsetX}px)`,
+        y: "-50%",
+        scale,
+        opacity,
+        zIndex,
       }}
-      className="w-[300px] h-[420px] rounded-2xl"
-      onClick={() => {
-          if (Math.abs(spring.x.get()) < 10 && Math.abs(spring.y.get()) < 10) {
-            onFlip();
-          }
-        }}
+      initial={false}
+      animate={{
+        scale: isHovered && isCenter ? 1.02 : scale,
+        x: `calc(-50% + ${offsetX}px)`,
+      }}
+      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (isCenter) {
+          onFlip();
+        } else {
+          // Click on side card to navigate to it
+        }
+      }}
     >
-      <motion.div
-        className="relative w-full h-full"
-        initial={false}
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-        style={{ transformStyle: "preserve-3d" }}
+      <div
+        className="relative w-[320px] h-[400px] rounded-2xl overflow-hidden"
+        style={{
+          background: gradient,
+          boxShadow: isCenter
+            ? `0 0 60px -20px ${accent}40, 0 25px 50px -12px rgba(0,0,0,0.5)`
+            : "0 10px 40px -10px rgba(0,0,0,0.4)",
+          transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+          transformStyle: "preserve-3d",
+          transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        }}
       >
-        {/* Front */}
+        {/* Front Face */}
         <div
-          className="absolute inset-0 rounded-2xl overflow-hidden"
-          style={{
-            background: gradient,
-            backfaceVisibility: "hidden",
-          }}
+          className="absolute inset-0 backface-hidden"
+          style={{ backfaceVisibility: "hidden" }}
         >
-          {/* Large initials watermark */}
+          {/* Scan line effect */}
           <div
-            className="absolute top-8 left-8 text-8xl font-display opacity-10 select-none"
-            style={{ color: "white" }}
-          >
-            {project.slug.slice(0, 2).toUpperCase()}
-          </div>
-
-          {/* Dot grid pattern */}
-          <div
-            className="absolute inset-0 opacity-20"
+            className="absolute inset-0 pointer-events-none opacity-[0.03]"
             style={{
-              backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
-              backgroundSize: "20px 20px",
+              backgroundImage: `repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255,255,255,0.1) 2px,
+                rgba(255,255,255,0.1) 4px
+              )`,
             }}
           />
 
-          {/* Category badge */}
+          {/* Corner accent */}
           <div
-            className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-mono uppercase"
+            className="absolute top-0 left-0 w-16 h-16"
             style={{
-              background: "rgba(0,0,0,0.4)",
-              color: "white",
-              backdropFilter: "blur(4px)",
+              background: `linear-gradient(135deg, ${accent} 0%, transparent 60%)`,
+              opacity: 0.15,
             }}
-          >
-            {project.category}
+          />
+
+          {/* Category & Year */}
+          <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+            <span
+              className="px-3 py-1 rounded-full text-[0.65rem] font-mono uppercase tracking-wider"
+              style={{
+                background: `${accent}20`,
+                color: accent,
+                border: `1px solid ${accent}40`,
+              }}
+            >
+              {project.category}
+            </span>
+            <span
+              className="px-2 py-1 rounded text-xs font-mono"
+              style={{ background: "rgba(0,0,0,0.4)", color: "#888" }}
+            >
+              {project.year}
+            </span>
           </div>
 
-          {/* Year badge */}
-          <div
-            className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-mono"
-            style={{
-              background: "rgba(0,0,0,0.4)",
-              color: "white",
-              backdropFilter: "blur(4px)",
-            }}
-          >
-            {project.year}
-          </div>
+          {/* Main Content */}
+          <div className="absolute inset-0 flex flex-col justify-end p-6">
+            {/* Initials Watermark */}
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[120px] font-bold opacity-[0.03] select-none"
+              style={{ color: "white", fontFamily: "var(--font-bebas)" }}
+            >
+              {project.slug.slice(0, 2).toUpperCase()}
+            </div>
 
-          {/* Bottom info */}
-          <div
-            className="absolute bottom-0 left-0 right-0 p-6"
-            style={{
-              background: "linear-gradient(transparent, rgba(0,0,0,0.8))",
-            }}
-          >
-            <h3 className="text-xl font-heading text-white mb-2">{project.title}</h3>
-            <p className="text-sm text-white/70 mb-4 line-clamp-2">{project.tagline}</p>
+            {/* Title */}
+            <h3
+              className="text-2xl font-bold mb-2 tracking-tight"
+              style={{
+                color: "white",
+                fontFamily: "var(--font-space-grotesk)",
+                textShadow: `0 0 30px ${accent}40`,
+              }}
+            >
+              {project.title}
+            </h3>
 
-            {/* Tech stack */}
-            <div className="flex gap-2 flex-wrap">
+            {/* Tagline */}
+            <p
+              className="text-sm leading-relaxed mb-4 line-clamp-2"
+              style={{ color: "rgba(255,255,255,0.7)" }}
+            >
+              {project.tagline}
+            </p>
+
+            {/* Tech Stack */}
+            <div className="flex gap-2 flex-wrap mb-4">
               {project.techStack.slice(0, 3).map((tech) => (
                 <span
                   key={tech}
-                  className="px-2 py-0.5 rounded text-[0.65rem] font-mono"
+                  className="px-2 py-0.5 rounded text-[0.6rem] font-mono"
                   style={{
-                    background: "rgba(255,255,255,0.2)",
-                    color: "white",
+                    background: "rgba(255,255,255,0.1)",
+                    color: "rgba(255,255,255,0.8)",
+                    border: "1px solid rgba(255,255,255,0.1)",
                   }}
                 >
                   {tech}
@@ -298,14 +308,26 @@ function ProjectCard({
               ))}
             </div>
 
-            {/* Flip hint */}
-            <div className="absolute bottom-4 right-4 text-xs text-white/50 font-mono">
-              click to flip →
+            {/* Hover indicator */}
+            <div
+              className="flex items-center gap-2 text-xs font-mono"
+              style={{ color: accent }}
+            >
+              <span className="opacity-60">Click to explore</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
           </div>
+
+          {/* Glow line at bottom */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-[2px]"
+            style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
+          />
         </div>
 
-        {/* Back */}
+        {/* Back Face */}
         <div
           className="absolute inset-0 rounded-2xl p-6"
           style={{
@@ -315,22 +337,38 @@ function ProjectCard({
             border: "1px solid var(--color-border)",
           }}
         >
-          <h3 className="text-xl font-serif italic mb-4" style={{ color: "var(--color-text)" }}>
-            {project.title}
-          </h3>
+          {/* Back header */}
+          <div className="flex items-center justify-between mb-4">
+            <h3
+              className="text-xl font-bold italic"
+              style={{
+                color: "var(--color-text)",
+                fontFamily: "var(--font-playfair)",
+              }}
+            >
+              {project.title}
+            </h3>
+            <span
+              className="text-xs font-mono px-2 py-1 rounded"
+              style={{ background: `${accent}20`, color: accent }}
+            >
+              {project.year}
+            </span>
+          </div>
 
+          {/* Details */}
           <div className="space-y-4">
             <div>
-              <span className="text-xs font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider">
+              <span className="text-[0.65rem] font-mono uppercase tracking-wider" style={{ color: "var(--color-text-tertiary)" }}>
                 My Role
               </span>
-              <p className="text-sm mt-1" style={{ color: "var(--color-text-secondary)" }}>
+              <p className="text-sm mt-1" style={{ color: "var(--color-text)" }}>
                 {project.myRole}
               </p>
             </div>
 
             <div>
-              <span className="text-xs font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider">
+              <span className="text-[0.65rem] font-mono uppercase tracking-wider" style={{ color: "var(--color-text-tertiary)" }}>
                 Impact
               </span>
               <p className="text-sm mt-1" style={{ color: "var(--color-text-secondary)" }}>
@@ -339,18 +377,18 @@ function ProjectCard({
             </div>
 
             <div>
-              <span className="text-xs font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider">
+              <span className="text-[0.65rem] font-mono uppercase tracking-wider" style={{ color: "var(--color-text-tertiary)" }}>
                 Tech Stack
               </span>
               <div className="flex gap-2 flex-wrap mt-2">
                 {project.techStack.map((tech) => (
                   <span
                     key={tech}
-                    className="px-2 py-0.5 rounded text-[0.65rem] font-mono"
+                    className="px-2 py-0.5 rounded text-[0.6rem] font-mono"
                     style={{
-                      background: "var(--color-primary)",
-                      color: "white",
-                      opacity: 0.8,
+                      background: accent,
+                      color: "#000",
+                      opacity: 0.9,
                     }}
                   >
                     {tech}
@@ -361,16 +399,16 @@ function ProjectCard({
           </div>
 
           {/* Links */}
-          <div className="flex gap-3 mt-6">
+          <div className="flex gap-3 mt-auto pt-4">
             {project.links?.github && (
               <a
                 href={project.links.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg"
+                className="p-2 rounded-lg transition-colors hover:bg-[var(--color-bg)]"
                 style={{ background: "var(--color-bg)" }}
               >
-                <FaGithub size={18} className="text-[var(--color-text-secondary)]" />
+                <FaGithub size={18} style={{ color: "var(--color-text-secondary)" }} />
               </a>
             )}
             {project.links?.demo && (
@@ -378,10 +416,10 @@ function ProjectCard({
                 href={project.links.demo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg"
+                className="p-2 rounded-lg transition-colors hover:bg-[var(--color-bg)]"
                 style={{ background: "var(--color-bg)" }}
               >
-                <ExternalLink size={18} className="text-[var(--color-text-secondary)]" />
+                <ExternalLink size={18} style={{ color: "var(--color-text-secondary)" }} />
               </a>
             )}
             {project.links?.report && (
@@ -389,31 +427,31 @@ function ProjectCard({
                 href={project.links.report}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg"
+                className="p-2 rounded-lg transition-colors hover:bg-[var(--color-bg)]"
                 style={{ background: "var(--color-bg)" }}
               >
-                <FileText size={18} className="text-[var(--color-text-secondary)]" />
+                <FileText size={18} style={{ color: "var(--color-text-secondary)" }} />
               </a>
             )}
             <Link
               href={`/projects/${project.slug}`}
-              className="ml-auto px-4 py-2 rounded-lg text-sm font-medium"
+              className="ml-auto px-4 py-2 rounded-lg text-sm font-medium transition-all hover:scale-105"
               style={{
-                background: "var(--color-primary)",
-                color: "white",
+                background: accent,
+                color: "#000",
               }}
             >
-              View →
+              Details →
             </Link>
           </div>
 
           {/* Back hint */}
-          <div className="absolute bottom-4 left-4 text-xs text-[var(--color-text-tertiary)] font-mono">
-            ← Back
+          <div className="absolute bottom-4 left-4 text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+            ← Click to flip back
           </div>
         </div>
-      </motion.div>
-    </animated.div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -438,6 +476,7 @@ export function ProjectDeckSection() {
   }, []);
 
   const navigateCard = useCallback((direction: "left" | "right") => {
+    setFlippedCards(new Set()); // Reset flips when navigating
     setCurrentIndex((prev) => {
       if (direction === "left" && prev > 0) return prev - 1;
       if (direction === "right" && prev < projects.length - 1) return prev + 1;
@@ -446,52 +485,95 @@ export function ProjectDeckSection() {
   }, []);
 
   return (
-    <section id="projects" className="relative py-[clamp(5rem,10vw,8rem)] bg-[var(--color-bg)]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <section id="projects" className="relative py-[clamp(5rem,10vw,8rem)] overflow-hidden" style={{ background: "var(--color-bg)" }}>
+      {/* Background gradient */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse 80% 50% at 50% 100%, rgba(232,51,10,0.08) 0%, transparent 60%)",
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         {/* Header */}
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
-            <span className="section-eyebrow block mb-2">Things I&apos;ve built</span>
-            <h2 className="text-h2 font-serif" style={{ fontFamily: "var(--font-serif)" }}>
+            <motion.span
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-sm font-mono uppercase tracking-widest mb-3 block"
+              style={{ color: "var(--color-primary)" }}
+            >
+              Things I&apos;ve built
+            </motion.span>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl font-bold"
+              style={{
+                fontFamily: "var(--font-playfair)",
+                color: "var(--color-text)",
+              }}
+            >
               Projects.
-            </h2>
+            </motion.h2>
           </div>
 
-          {/* Exploration counter */}
-          <div className="flex items-center gap-4">
-            <div className="px-4 py-2 rounded-full border" style={{ borderColor: "var(--color-border)" }}>
-              <span className="font-mono text-sm">
-                <span style={{ color: "var(--color-primary)" }}>{exploredCount}</span>
-                <span className="text-[var(--color-text-tertiary)]"> / {totalCards}</span>
-                <span className="text-[var(--color-text-secondary)] ml-2">explored</span>
-              </span>
+          {/* Stats & Navigation */}
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
+              <div
+                className="px-4 py-2 rounded-full"
+                style={{
+                  background: "var(--color-bg-elevated)",
+                  border: "1px solid var(--color-border)",
+                }}
+              >
+                <span className="font-mono text-sm">
+                  <span style={{ color: "var(--color-primary)", fontWeight: "bold" }}>{exploredCount}</span>
+                  <span style={{ color: "var(--color-text-tertiary)" }}> / {totalCards}</span>
+                  <span className="ml-2" style={{ color: "var(--color-text-secondary)" }}>explored</span>
+                </span>
+              </div>
             </div>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={() => navigateCard("left")}
                 disabled={currentIndex === 0}
-                className="p-2 rounded-lg disabled:opacity-30"
-                style={{ background: "var(--color-bg-elevated)" }}
+                className="p-3 rounded-xl disabled:opacity-30 transition-all hover:scale-105 active:scale-95"
+                style={{
+                  background: "var(--color-bg-elevated)",
+                  border: "1px solid var(--color-border)",
+                }}
+                aria-label="Previous project"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={20} style={{ color: "var(--color-text)" }} />
               </button>
               <button
                 onClick={() => navigateCard("right")}
                 disabled={currentIndex === projects.length - 1}
-                className="p-2 rounded-lg disabled:opacity-30"
-                style={{ background: "var(--color-bg-elevated)" }}
+                className="p-3 rounded-xl disabled:opacity-30 transition-all hover:scale-105 active:scale-95"
+                style={{
+                  background: "var(--color-bg-elevated)",
+                  border: "1px solid var(--color-border)",
+                }}
+                aria-label="Next project"
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={20} style={{ color: "var(--color-text)" }} />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Deck */}
+        {/* Card Deck */}
         <div
-          className="relative flex items-center justify-center"
-          style={{ minHeight: "500px" }}
+          className="relative flex items-center justify-center py-12"
+          style={{ minHeight: "480px" }}
+          onClick={() => setFlippedCards(new Set())}
         >
           {projects.map((project, index) => {
             const isCenter = index === currentIndex;
@@ -503,6 +585,7 @@ export function ProjectDeckSection() {
                 project={project}
                 index={index}
                 totalCards={projects.length}
+                currentIndex={currentIndex}
                 isCenter={isCenter}
                 isDimmed={isDimmed}
                 onFlip={() => handleFlip(project.slug)}
@@ -512,23 +595,44 @@ export function ProjectDeckSection() {
           })}
         </div>
 
+        {/* Progress dots */}
+        <div className="flex justify-center gap-2 mt-8">
+          {projects.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setFlippedCards(new Set());
+                setCurrentIndex(index);
+              }}
+              className="w-2 h-2 rounded-full transition-all"
+              style={{
+                background: index === currentIndex
+                  ? "var(--color-primary)"
+                  : "var(--color-border)",
+                transform: index === currentIndex ? "scale(1.3)" : "scale(1)",
+              }}
+              aria-label={`Go to project ${index + 1}`}
+            />
+          ))}
+        </div>
+
         {/* All explored celebration */}
         <AnimatePresence>
           {exploredCount === totalCards && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="mt-8 text-center"
+              className="flex justify-center mt-12"
             >
               <div
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full"
+                className="inline-flex items-center gap-3 px-6 py-3 rounded-full"
                 style={{
-                  background: "var(--color-primary)",
+                  background: "linear-gradient(135deg, var(--color-primary), #ff6b35)",
                   color: "white",
                 }}
               >
-                <span className="text-lg">🎉</span>
+                <span className="text-xl">🎉</span>
                 <span className="font-medium">You&apos;ve explored all my work!</span>
               </div>
             </motion.div>
@@ -536,31 +640,41 @@ export function ProjectDeckSection() {
         </AnimatePresence>
 
         {/* Mobile: horizontal scroll */}
-        <div className="md:hidden mt-8 overflow-x-auto snap-x snap-mandatory flex gap-4 pb-4">
+        <div className="md:hidden mt-12 overflow-x-auto snap-x snap-mandatory flex gap-4 pb-4 -mx-6 px-6">
           {projects.map((project) => (
-            <Link
+            <div
               key={project.slug}
-              href={`/projects/${project.slug}`}
-              className="flex-shrink-0 w-[280px] snap-center p-6 rounded-xl border"
+              className="flex-shrink-0 w-[280px] snap-center rounded-xl p-5"
               style={{
                 background: "var(--color-bg-elevated)",
-                borderColor: "var(--color-border)",
+                border: "1px solid var(--color-border)",
               }}
             >
-              <span className="text-xs font-mono text-[var(--color-primary)] uppercase">
-                {project.category}
-              </span>
-              <h3 className="text-lg font-heading mt-2" style={{ color: "var(--color-text)" }}>
+              <div className="flex items-center gap-2 mb-3">
+                <span
+                  className="px-2 py-0.5 rounded text-[0.6rem] font-mono uppercase"
+                  style={{
+                    background: `${accentColors[project.category]}20`,
+                    color: accentColors[project.category],
+                  }}
+                >
+                  {project.category}
+                </span>
+                <span className="text-xs font-mono" style={{ color: "var(--color-text-tertiary)" }}>
+                  {project.year}
+                </span>
+              </div>
+              <h3 className="text-lg font-bold mb-2" style={{ color: "var(--color-text)" }}>
                 {project.title}
               </h3>
-              <p className="text-sm mt-2 line-clamp-2" style={{ color: "var(--color-text-secondary)" }}>
+              <p className="text-sm line-clamp-2 mb-3" style={{ color: "var(--color-text-secondary)" }}>
                 {project.tagline}
               </p>
-              <div className="flex gap-2 flex-wrap mt-4">
+              <div className="flex gap-2 flex-wrap">
                 {project.techStack.slice(0, 3).map((tech) => (
                   <span
                     key={tech}
-                    className="px-2 py-0.5 rounded text-[0.65rem] font-mono"
+                    className="px-2 py-0.5 rounded text-[0.6rem] font-mono"
                     style={{
                       background: "var(--color-bg)",
                       color: "var(--color-text-tertiary)",
@@ -570,20 +684,28 @@ export function ProjectDeckSection() {
                   </span>
                 ))}
               </div>
-            </Link>
+            </div>
           ))}
         </div>
 
         {/* View all link */}
-        <div className="text-center mt-12">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center mt-16"
+        >
           <Link
             href="/projects"
-            className="inline-flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-[var(--color-primary)]"
+            style={{ color: "var(--color-text-secondary)" }}
           >
             View all projects
-            <span>→</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
