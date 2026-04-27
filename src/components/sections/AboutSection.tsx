@@ -2,14 +2,32 @@
 
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Download } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { viewportConfig } from "@/lib/animations";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export function AboutSection() {
+interface AboutSectionProps {
+  heading?: string;
+  location?: string;
+  availability?: "available" | "open" | "busy";
+}
+
+export function AboutSection({
+  heading = "The human behind the code.",
+  location = "Surabaya, Indonesia",
+  availability = "available",
+}: AboutSectionProps) {
   const prefersReduced = useReducedMotion();
   const [showBubble, setShowBubble] = useState(false);
   const [isWiggling, setIsWiggling] = useState(false);
+  const [hasProfileImage, setHasProfileImage] = useState(false);
+
+  useEffect(() => {
+    fetch("/images/profile/arsenius.jpg")
+      .then((res) => setHasProfileImage(res.ok))
+      .catch(() => setHasProfileImage(false));
+  }, []);
 
   return (
     <section
@@ -57,31 +75,102 @@ export function AboutSection() {
                 }}
                 className="relative aspect-[3/4] w-full rounded-[var(--radius-xl)] overflow-hidden bg-[var(--color-bg-elevated)] cursor-pointer"
               >
-                {/* Gradient placeholder when no photo */}
-                <div
-                  className="absolute inset-0 rounded-[var(--radius-xl)]"
-                  style={{
-                    background:
-                      "linear-gradient(145deg, var(--color-bg-elevated) 0%, var(--color-bg-subtle) 100%)",
-                  }}
-                />
-                {/* Subtle warm tint */}
-                <div
-                  className="absolute inset-0 opacity-40 rounded-[var(--radius-xl)]"
-                  style={{
-                    background:
-                      "radial-gradient(ellipse 80% 60% at 50% 30%, var(--color-primary-muted), transparent)",
-                  }}
-                />
-                {/* AA initials */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span
-                    className="font-serif italic text-7xl text-[var(--color-text-tertiary)] select-none"
-                    style={{ fontFamily: "var(--font-serif)" }}
-                  >
-                    AA
-                  </span>
-                </div>
+                {hasProfileImage ? (
+                  /* Actual photo with hover effect */
+                  <Image
+                    src="/images/profile/arsenius.jpg"
+                    alt="Arsenius Audley"
+                    fill
+                    className="object-cover transition-all duration-300 hover:grayscale-[50%]"
+                    sizes="(max-width: 1024px) 340px, 400px"
+                  />
+                ) : (
+                  /* Geometric SVG placeholder */
+                  <>
+                    <div
+                      className="absolute inset-0 rounded-[var(--radius-xl)]"
+                      style={{
+                        background:
+                          "linear-gradient(145deg, var(--color-bg-elevated) 0%, var(--color-bg-subtle) 100%)",
+                      }}
+                    />
+
+                    {/* Geometric shapes */}
+                    <svg
+                      className="absolute inset-0 w-full h-full"
+                      viewBox="0 0 340 453"
+                      preserveAspectRatio="xMidYMid slice"
+                    >
+                      {/* Large circle */}
+                      <circle
+                        cx="170"
+                        cy="120"
+                        r="80"
+                        fill="none"
+                        stroke="var(--color-primary)"
+                        strokeWidth="1"
+                        opacity="0.3"
+                      />
+
+                      {/* Medium tilted rectangle */}
+                      <rect
+                        x="80"
+                        y="200"
+                        width="100"
+                        height="140"
+                        rx="8"
+                        fill="none"
+                        stroke="var(--color-border)"
+                        strokeWidth="1"
+                        opacity="0.5"
+                        transform="rotate(15, 130, 270)"
+                      />
+
+                      {/* Small hexagon */}
+                      <polygon
+                        points="280,320 295,335 295,355 280,370 265,355 265,335"
+                        fill="var(--color-primary)"
+                        opacity="0.1"
+                      />
+
+                      {/* Dot grid */}
+                      <defs>
+                        <pattern
+                          id="dotGrid"
+                          x="0"
+                          y="0"
+                          width="20"
+                          height="20"
+                          patternUnits="userSpaceOnUse"
+                        >
+                          <circle cx="10" cy="10" r="1" fill="var(--color-border)" opacity="0.3" />
+                        </pattern>
+                      </defs>
+                      <rect width="100%" height="100%" fill="url(#dotGrid)" />
+                    </svg>
+
+                    {/* Initials */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span
+                        className="font-serif italic text-6xl text-[var(--color-text-tertiary)] select-none"
+                        style={{ fontFamily: "var(--font-serif)" }}
+                      >
+                        AA
+                      </span>
+                    </div>
+
+                    {/* Photo coming soon hint */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                      <span
+                        className="text-[0.7rem] text-[var(--color-text-tertiary)] font-mono"
+                        style={{ opacity: 0.7 }}
+                      >
+                        📸 Photo coming soon
+                      </span>
+                    </div>
+                  </>
+                )}
+
                 {/* Speech bubble */}
                 <AnimatePresence>
                   {showBubble && (
@@ -91,7 +180,7 @@ export function AboutSection() {
                       exit={{ opacity: 0 }}
                       className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-[var(--color-bg-inverse)] text-[var(--color-text-inverse)] px-4 py-2 rounded-xl font-body text-sm shadow-lg whitespace-nowrap z-10"
                     >
-                      That&apos;s me! Photo coming soon 📸
+                      That&apos;s me! Click to learn more
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -111,7 +200,14 @@ export function AboutSection() {
             {/* Status pill */}
             <div className="mt-8 flex items-center gap-2">
               <span
-                className="inline-block w-2 h-2 rounded-full bg-[var(--color-sage)]"
+                className="inline-block w-2 h-2 rounded-full"
+                style={{
+                  backgroundColor: availability === "busy"
+                    ? "var(--color-amber)"
+                    : availability === "open"
+                    ? "var(--color-sky)"
+                    : "var(--color-sage)"
+                }}
                 aria-hidden="true"
               />
               <span
@@ -121,7 +217,11 @@ export function AboutSection() {
                   color: "var(--color-text-secondary)",
                 }}
               >
-                Currently in Surabaya, Indonesia
+                Currently in {location} {
+                  availability === "available" ? "· Available for work" :
+                  availability === "open" ? "· Open to opportunities" :
+                  "· Limited availability"
+                }
               </span>
             </div>
           </motion.div>
@@ -160,7 +260,7 @@ export function AboutSection() {
                 color: "var(--color-text)",
               }}
             >
-              The human behind the code.
+              {heading}
             </motion.h2>
 
             {/* Bio paragraphs with inline stats */}

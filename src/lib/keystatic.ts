@@ -14,6 +14,54 @@ const certificationsDirectory = path.join(
   "src/content/certifications"
 );
 
+// ── Site Config Types ─────────────────────────────────────────────────────────
+export interface SiteConfig {
+  heroAvailableText: string;
+  heroFirstName: string;
+  heroLastName: string;
+  heroRoleSans: string;
+  heroRoleSerif: string;
+  heroDescription: string;
+  aboutHeading: string;
+  aboutLocation: string;
+  aboutAvailability: "available" | "open" | "busy";
+  contactHeadline1: string;
+  contactHeadline2: string;
+  contactHeadline3: string;
+  contactSubtext: string;
+  contactEmail: string;
+  socialGithub: string;
+  socialLinkedin: string;
+  showSkills: boolean;
+  showExperience: boolean;
+  showCertifications: boolean;
+  cvUrl: string;
+}
+
+// ── Default values ────────────────────────────────────────────────────────────
+const defaultConfig: SiteConfig = {
+  heroAvailableText: "Surabaya, Indonesia · Available for work",
+  heroFirstName: "ARSENIUS",
+  heroLastName: "AUDLEY",
+  heroRoleSans: "Fullstack Developer &",
+  heroRoleSerif: "ML Engineer",
+  heroDescription: "Building intelligent systems at the intersection of web, AI, and immersive technology.",
+  aboutHeading: "The human behind the code.",
+  aboutLocation: "Surabaya, Indonesia",
+  aboutAvailability: "available",
+  contactHeadline1: "Let's build",
+  contactHeadline2: "something",
+  contactHeadline3: "together.",
+  contactSubtext: "Open for full-time roles and interesting collaborations.",
+  contactEmail: "arseniuswahyu@gmail.com",
+  socialGithub: "https://github.com/EevnxyEgo",
+  socialLinkedin: "https://linkedin.com/in/arsenius-audley-wahyu-djatmiko-7a8830251",
+  showSkills: true,
+  showExperience: true,
+  showCertifications: true,
+  cvUrl: "/cv.pdf",
+};
+
 export function getProjects(): Project[] {
   try {
     const fileNames = fs.readdirSync(projectsDirectory);
@@ -82,7 +130,35 @@ export function getAllProjectSlugs(): string[] {
   }
 }
 
-export async function getSiteConfig() {
-  const config = await reader.singletons.siteConfig.read();
-  return config;
+export async function getSiteConfig(): Promise<SiteConfig> {
+  try {
+    const config = await reader.singletons.siteConfig.read();
+    if (!config) {
+      return defaultConfig;
+    }
+    return {
+      heroAvailableText: config.heroAvailableText ?? defaultConfig.heroAvailableText,
+      heroFirstName: config.heroFirstName ?? defaultConfig.heroFirstName,
+      heroLastName: config.heroLastName ?? defaultConfig.heroLastName,
+      heroRoleSans: config.heroRoleSans ?? defaultConfig.heroRoleSans,
+      heroRoleSerif: config.heroRoleSerif ?? defaultConfig.heroRoleSerif,
+      heroDescription: config.heroDescription ?? defaultConfig.heroDescription,
+      aboutHeading: config.aboutHeading ?? defaultConfig.aboutHeading,
+      aboutLocation: config.aboutLocation ?? defaultConfig.aboutLocation,
+      aboutAvailability: config.aboutAvailability ?? defaultConfig.aboutAvailability,
+      contactHeadline1: config.contactHeadline1 ?? defaultConfig.contactHeadline1,
+      contactHeadline2: config.contactHeadline2 ?? defaultConfig.contactHeadline2,
+      contactHeadline3: config.contactHeadline3 ?? defaultConfig.contactHeadline3,
+      contactSubtext: config.contactSubtext ?? defaultConfig.contactSubtext,
+      contactEmail: config.contactEmail ?? defaultConfig.contactEmail,
+      socialGithub: config.socialGithub ?? defaultConfig.socialGithub,
+      socialLinkedin: config.socialLinkedin ?? defaultConfig.socialLinkedin,
+      showSkills: config.showSkills ?? defaultConfig.showSkills,
+      showExperience: config.showExperience ?? defaultConfig.showExperience,
+      showCertifications: config.showCertifications ?? defaultConfig.showCertifications,
+      cvUrl: config.cvUrl ?? defaultConfig.cvUrl,
+    };
+  } catch {
+    return defaultConfig;
+  }
 }

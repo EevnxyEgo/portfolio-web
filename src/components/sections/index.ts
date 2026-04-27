@@ -1,6 +1,8 @@
 export { HeroSection } from "./HeroSection";
 export { AboutSection } from "./AboutSection";
 export { SkillsSection } from "./SkillsSection";
+export { SkillTreeSection } from "./SkillTreeSection";
+export { ProjectDeckSection } from "./ProjectDeckSection";
 export { ProjectsSection } from "./ProjectsSection";
 export { ExperienceSection } from "./ExperienceSection";
 export { CertificationsSection } from "./CertificationsSection";

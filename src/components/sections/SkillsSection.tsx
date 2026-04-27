@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
 // ─── Skill descriptions map ────────────────────────────────────────────────────
@@ -229,6 +229,16 @@ export function SkillsSection() {
     return () => document.removeEventListener("skillfilter", handler);
   }, []);
 
+  const currentlyLearning = ["Rust", "LangChain", "WebGPU", "Diffusion Models", "Edge AI"];
+  const [currentLearningIndex, setCurrentLearningIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentLearningIndex((prev) => (prev + 1) % currentlyLearning.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [currentlyLearning.length]);
+
   const headerInitial = reduced ? undefined : { opacity: 0, y: 20 };
   const headerAnimate = reduced ? undefined : { opacity: 1, y: 0 };
 
@@ -315,6 +325,35 @@ export function SkillsSection() {
           </button>
         </div>
       )}
+
+      {/* Currently exploring strip */}
+      <div className="mt-12 pt-8 border-t border-[var(--color-border)]">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+          <span className="text-[0.85rem] text-[var(--color-text-tertiary)] font-body">
+            Currently exploring
+            <span className="ml-2 text-[var(--color-text-secondary)]">→</span>
+          </span>
+          <div className="flex items-center gap-2">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={currentlyLearning[currentLearningIndex]}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
+                className="px-3 py-1 rounded-full text-xs font-mono"
+                style={{
+                  border: "1px dashed var(--color-amber)",
+                  color: "var(--color-amber)",
+                  background: "rgba(217, 119, 6, 0.05)",
+                }}
+              >
+                {currentlyLearning[currentLearningIndex]}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

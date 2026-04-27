@@ -5,7 +5,6 @@ import { useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import { Mail, Send, CheckCircle, AlertCircle } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { cn } from "@/lib/utils";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
@@ -16,11 +15,25 @@ interface FormData {
   message: string;
 }
 
-const EMAIL = "arseniuswahyu@gmail.com";
-const GITHUB = "https://github.com/EevnxyEgo";
-const LINKEDIN = "https://linkedin.com/in/arsenius-audley-wahyu-djatmiko-7a8830251";
+interface ContactSectionProps {
+  headline1?: string;
+  headline2?: string;
+  headline3?: string;
+  subtext?: string;
+  email?: string;
+  github?: string;
+  linkedin?: string;
+}
 
-export function ContactSection() {
+export function ContactSection({
+  headline1 = "Let's build",
+  headline2 = "something",
+  headline3 = "together.",
+  subtext = "Open for full-time roles, freelance projects, and interesting collaborations. I combine fullstack web development with AI and automation.",
+  email = "arseniuswahyu@gmail.com",
+  github = "https://github.com/EevnxyEgo",
+  linkedin = "https://linkedin.com/in/arsenius-audley-wahyu-djatmiko-7a8830251",
+}: ContactSectionProps) {
   const prefersReduced = useReducedMotion();
   const [status, setStatus] = useState<FormStatus>("idle");
   const [formData, setFormData] = useState<FormData>({
@@ -88,7 +101,7 @@ export function ContactSection() {
               className="text-[clamp(2.25rem,4vw,3rem)] leading-[1.1] tracking-tight"
               style={{ fontFamily: "var(--font-serif)" }}
             >
-              Let&apos;s build{" "}
+              {headline1}{" "}
               <em
                 className="not-italic"
                 style={{
@@ -97,10 +110,10 @@ export function ContactSection() {
                   color: "var(--color-primary)",
                 }}
               >
-                something
+                {headline2}
               </em>
               <br />
-              <span style={{ fontFamily: "var(--font-serif)" }}>together.</span>
+              <span style={{ fontFamily: "var(--font-serif)" }}>{headline3}</span>
             </h2>
 
             {/* Sub text */}
@@ -108,13 +121,12 @@ export function ContactSection() {
               className="mt-5 mb-8 text-sm leading-relaxed max-w-[380px]"
               style={{ color: "var(--color-text-secondary)", fontFamily: "var(--font-body)" }}
             >
-              Open for full-time roles, freelance projects, and interesting collaborations. I
-              combine fullstack web development with AI and automation.
+              {subtext}
             </p>
 
             {/* Email link */}
             <a
-              href={`mailto:${EMAIL}`}
+              href={`mailto:${email}`}
               className="inline-flex items-center gap-2 text-base mb-8 transition-colors duration-150"
               style={{
                 fontFamily: "var(--font-body)",
@@ -124,14 +136,14 @@ export function ContactSection() {
             >
               <Mail size={18} style={{ color: "var(--color-primary)" }} />
               <span className="hover:text-[var(--color-primary)] transition-colors duration-150">
-                {EMAIL}
+                {email}
               </span>
             </a>
 
             {/* Social links — icon + text (NOT buttons) */}
             <div className="flex items-center gap-8">
               <a
-                href={GITHUB}
+                href={github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm transition-colors duration-150"
@@ -144,7 +156,7 @@ export function ContactSection() {
                 <span className="hover:text-[var(--color-text)]">GitHub</span>
               </a>
               <a
-                href={LINKEDIN}
+                href={linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm transition-colors duration-150"
@@ -156,6 +168,45 @@ export function ContactSection() {
                 <FaLinkedin size={18} />
                 <span className="hover:text-[var(--color-text)]">LinkedIn</span>
               </a>
+            </div>
+
+            {/* Response time indicator */}
+            <div className="flex items-center gap-2 mt-4 text-[0.85rem]" style={{ color: "var(--color-text-tertiary)" }}>
+              <span className="text-[var(--color-amber)]">⚡</span>
+              <span style={{ fontFamily: "var(--font-body)" }}>Usually responds within 24 hours</span>
+            </div>
+
+            {/* Availability mini widget */}
+            <div className="mt-6 p-4 rounded-lg border border-[var(--color-border)]" style={{ background: "var(--color-bg)" }}>
+              <p className="text-[0.7rem] text-[var(--color-text-tertiary)] mb-3 font-mono uppercase tracking-wider">
+                Availability this month
+              </p>
+              <div className="flex gap-1">
+                {Array.from({ length: 20 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-3 h-3 rounded-sm"
+                    style={{
+                      background: i < 15
+                        ? "var(--color-sage)"
+                        : i < 17
+                        ? "var(--color-amber)"
+                        : "var(--color-border)",
+                      opacity: 0.7,
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="flex items-center gap-4 mt-3 text-[0.7rem]">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-sm" style={{ background: "var(--color-sage)" }} />
+                  <span style={{ color: "var(--color-text-tertiary)" }}>Available</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-sm" style={{ background: "var(--color-amber)" }} />
+                  <span style={{ color: "var(--color-text-tertiary)" }}>Limited</span>
+                </div>
+              </div>
             </div>
           </motion.div>
 

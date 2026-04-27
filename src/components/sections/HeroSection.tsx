@@ -5,6 +5,7 @@ import type { Variants } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { Mail } from "lucide-react";
+import Link from "next/link";
 import { SplitText } from "@/components/shared/SplitText";
 import { siteConfig } from "@/lib/metadata";
 
@@ -47,7 +48,17 @@ const fadeInUp: Variants = {
   },
 };
 
-export function HeroSection() {
+interface HeroSectionProps {
+  availableText?: string;
+  firstName?: string;
+  lastName?: string;
+}
+
+export function HeroSection({
+  availableText = "Surabaya, Indonesia · Available for work",
+  firstName = "ARSENIUS",
+  lastName = "AUDLEY",
+}: HeroSectionProps) {
   const prefersReduced = useReducedMotion();
 
   return (
@@ -57,23 +68,34 @@ export function HeroSection() {
     >
       {/* Marquee ticker */}
       <div
-        className="absolute top-0 left-0 right-0 overflow-hidden h-8 flex items-center border-b border-[var(--color-border)]"
-        style={{ background: "var(--color-bg)", opacity: 0.7 }}
+        className="absolute top-0 left-0 right-0 overflow-hidden h-9 flex items-center border-b border-[var(--color-border)]"
+        style={{ background: "var(--color-bg)" }}
         aria-hidden="true"
       >
         <div
-          style={{
-            display: "flex",
-            animation: "marquee 30s linear infinite",
-            whiteSpace: "nowrap",
-          }}
+          className="flex marquee-animation hover:[animation-play-state:paused]"
+          style={{ whiteSpace: "nowrap" }}
         >
           {[0, 1, 2].map((i) => (
             <span
               key={i}
               className="font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[var(--color-text-tertiary)] px-8"
             >
-              FULLSTACK &nbsp;&middot;&nbsp; ML ENGINEER &nbsp;&middot;&nbsp; ITS SURABAYA &nbsp;&middot;&nbsp; BANGKIT ALUMNI &nbsp;&middot;&nbsp; AVAILABLE FOR WORK &nbsp;&middot;&nbsp; OPEN TO OPPORTUNITIES &nbsp;&middot;&nbsp;
+              FULLSTACK DEVELOPER{" "}
+              <span className="text-[var(--color-primary)]">✦</span>{" "}
+              ML ENGINEER{" "}
+              <span className="text-[var(--color-primary)]">✦</span>{" "}
+              ITS SURABAYA{" "}
+              <span className="text-[var(--color-primary)]">✦</span>{" "}
+              BANGKIT ALUMNI{" "}
+              <span className="text-[var(--color-primary)]">✦</span>{" "}
+              AVAILABLE FOR WORK{" "}
+              <span className="text-[var(--color-primary)]">✦</span>{" "}
+              OPEN TO OPPORTUNITIES{" "}
+              <span className="text-[var(--color-primary)]">✦</span>{" "}
+              REACT &middot; NEXT.JS &middot; PYTHON{" "}
+              <span className="text-[var(--color-primary)]">✦</span>{" "}
+              TENSORFLOW &middot; KERAS &middot; OPENCV
             </span>
           ))}
         </div>
@@ -108,7 +130,7 @@ export function HeroSection() {
             <span
               className="font-mono text-xs tracking-[0.12em] uppercase text-[var(--color-text-tertiary)]"
             >
-              Surabaya, Indonesia &middot; Available for work
+              {availableText}
             </span>
           </motion.div>
 
@@ -118,11 +140,11 @@ export function HeroSection() {
               <h1
                 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(4.5rem, 10vw, 9rem)" }}
               >
-                ARSENIUS
+                {firstName}
               </h1>
             ) : (
               <SplitText
-                text="ARSENIUS"
+                text={firstName}
                 element="h1"
                 className="block leading-none"
                 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(4.5rem, 10vw, 9rem)" }}
@@ -143,11 +165,11 @@ export function HeroSection() {
               <h1
                 style={{ paddingLeft: "clamp(1.5rem, 5vw, 5rem)", fontFamily: "var(--font-display)", fontSize: "clamp(4.5rem, 10vw, 9rem)" }}
               >
-                AUDLEY
+                {lastName}
               </h1>
             ) : (
               <SplitText
-                text="AUDLEY"
+                text={lastName}
                 element="h1"
                 className="block leading-none"
                 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(4.5rem, 10vw, 9rem)" }}
@@ -187,7 +209,7 @@ export function HeroSection() {
             className="flex flex-wrap items-center gap-x-6 gap-y-4 pt-2"
           >
             {/* View my work */}
-            <a
+            <Link
               href="/#projects"
               className="inline-flex items-center gap-1 font-body font-medium text-sm text-[var(--color-text)] transition-all hover:text-[var(--color-primary)] group"
             >
@@ -195,7 +217,7 @@ export function HeroSection() {
               <span className="inline-flex items-center transition-transform duration-150 group-hover:translate-x-1">
                 &rarr;
               </span>
-            </a>
+            </Link>
 
             {/* Download CV */}
             <a

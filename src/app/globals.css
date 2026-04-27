@@ -516,6 +516,10 @@ body {
   to { transform: translateX(-33.333%); }
 }
 
+.marquee-animation {
+  animation: marquee 30s linear infinite;
+}
+
 /* ── Warm Atmosphere Circle (hero background) ────────────────────────────────── */
 .warm-atmosphere {
   position: absolute;

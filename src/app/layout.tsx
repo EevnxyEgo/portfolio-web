@@ -11,6 +11,8 @@ import { JsonLd } from "@/components/shared/JsonLd";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { ScrollProgress } from "@/components/shared/ScrollProgress";
 import { SmartCursor } from "@/components/shared/SmartCursor";
+import { PuzzlePortal } from "@/components/shared/PuzzlePortal";
+import { ScrollParticlesWrapper } from "@/components/shared/ScrollParticlesWrapper";
 
 const bebasNeue = Bebas_Neue({
   subsets: ["latin"],
@@ -116,6 +118,8 @@ export default function RootLayout({
         <ThemeProvider>
           <SmartCursor />
           <ScrollProgress />
+          <PuzzlePortal />
+          <ScrollParticlesWrapper />
           <JsonLd />
           {children}
         </ThemeProvider>

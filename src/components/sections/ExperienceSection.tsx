@@ -2,7 +2,6 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
 
 interface ExperienceEntry {
   year: string;
@@ -123,7 +122,7 @@ export function ExperienceSection() {
       id="experience"
       className="relative py-[clamp(5rem,10vw,8rem)] bg-[var(--color-bg)]"
     >
-      <div className="max-w-[680px] mx-auto px-6 lg:px-8">
+      <div className="max-w-[720px] mx-auto px-6 lg:px-8">
         {/* Section header — left-aligned, editorial */}
         <motion.div
           initial={prefersReduced ? false : { opacity: 0, y: 16 }}
@@ -166,7 +165,7 @@ export function ExperienceSection() {
               left: TIMELINE_LEFT,
               top: 0,
               bottom: 0,
-              width: "1px",
+              width: "2px",
               backgroundColor: "var(--color-border)",
               transformOrigin: "top center",
             }}
@@ -174,7 +173,7 @@ export function ExperienceSection() {
 
           {/* Experience entries */}
           <div className="space-y-14">
-            {experiences.map((exp, index) => (
+            {experiences.map((exp) => (
               <motion.div
                 key={`${exp.year}-${exp.title}`}
                 initial={prefersReduced ? false : { opacity: 0, y: 20 }}

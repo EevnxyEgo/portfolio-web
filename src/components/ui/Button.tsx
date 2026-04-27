@@ -4,7 +4,6 @@ import { forwardRef } from "react";
 import Link from "next/link";
 import { cva, type VariantProps } from "class-variance-authority";
 import { MagneticElement } from "@/components/shared/MagneticElement";
-import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   `

@@ -9,6 +9,7 @@ export function SmartCursor() {
   const [mounted, setMounted] = useState(false);
   const [state, setState] = useState<CursorState>("default");
   const [label, setLabel] = useState("");
+  const [dotPos, setDotPos] = useState({ x: 0, y: 0 });
   const [ringPos, setRingPos] = useState({ x: 0, y: 0 });
   const pos = useRef({ x: 0, y: 0 });
   const rafRef = useRef<number>(0);
@@ -20,7 +21,6 @@ export function SmartCursor() {
   useEffect(() => {
     if (!mounted) return;
     if (typeof window === "undefined") return;
-    // Hide on touch devices
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const onMove = (e: MouseEvent) => {
@@ -47,11 +47,13 @@ export function SmartCursor() {
       }
     };
 
-    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    let currentRingPos = ringPos;
 
     const animate = () => {
-      const nx = lerp(ringPos.x, pos.current.x, 0.12);
-      const ny = lerp(ringPos.y, pos.current.y, 0.12);
+      setDotPos({ x: pos.current.x, y: pos.current.y });
+      const nx = currentRingPos.x + (pos.current.x - currentRingPos.x) * 0.12;
+      const ny = currentRingPos.y + (pos.current.y - currentRingPos.y) * 0.12;
+      currentRingPos = { x: nx, y: ny };
       setRingPos({ x: nx, y: ny });
       rafRef.current = requestAnimationFrame(animate);
     };
@@ -65,7 +67,8 @@ export function SmartCursor() {
       document.removeEventListener("mouseover", onOver);
       cancelAnimationFrame(rafRef.current);
     };
-  }, [mounted]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted]); // ringPos intentionally handled via closure to avoid stale state
 
   if (!mounted) return null;
   if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return null;
@@ -79,8 +82,8 @@ export function SmartCursor() {
       <motion.div
         className="pointer-events-none fixed top-0 left-0 z-[var(--z-cursor)] hidden md:block"
         animate={{
-          x: pos.current.x - 4,
-          y: pos.current.y - 4,
+          x: dotPos.x - 4,
+          y: dotPos.y - 4,
           opacity: showInnerDot ? 1 : 0,
           scale: showInnerDot ? 1 : 0,
         }}

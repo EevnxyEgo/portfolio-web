@@ -62,10 +62,11 @@ function LogoConfetti() {
 function KonamiEgg() {
   const [retroMode, setRetroMode] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const sequence = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","KeyB","KeyA"];
-  const indexRef = useRef(0);
 
   useEffect(() => {
+    const sequence = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","KeyB","KeyA"];
+    const indexRef = { current: 0 };
+
     const handler = (e: KeyboardEvent) => {
       if (e.code === sequence[indexRef.current]) {
         indexRef.current++;

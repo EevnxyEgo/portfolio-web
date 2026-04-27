@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import { FileText, Award, Edit } from "lucide-react";
+import { useState } from "react";
+import { FileText, Award, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
 const mockProjects = [
@@ -42,7 +42,7 @@ export default function KeystaticPage() {
             href="/"
             className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors"
           >
-            ← Back to Site
+            Back to Site
           </Link>
         </div>
       </header>
@@ -75,14 +75,27 @@ export default function KeystaticPage() {
           </button>
         </div>
 
+        {/* Info Banner */}
+        <div className="mb-8 p-4 rounded-lg bg-[var(--color-surface)] border border-[var(--color-primary)]/30">
+          <p className="text-sm text-[var(--color-text-secondary)]">
+            <span className="text-[var(--color-primary)] font-medium">Content Management:</span> Edit YAML files directly in <code className="bg-[var(--color-bg)] px-2 py-0.5 rounded text-xs">src/content/</code> directory. Run <code className="bg-[var(--color-bg)] px-2 py-0.5 rounded text-xs">npm run dev</code> and open <a href="http://localhost:3000/keystatic" className="text-[var(--color-primary)] underline">localhost:3000/keystatic</a> to access the visual editor.
+          </p>
+        </div>
+
         {/* Projects Tab */}
         {activeTab === "projects" && (
           <div className="space-y-4">
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-heading text-xl">Projects</h2>
-              <span className="text-sm text-[var(--color-text-tertiary)]">
-                Edit files in src/content/projects/
-              </span>
+              <Link
+                href="https://github.com/EevnxyEgo/arsenius-portfolio/edit/main/src/content/projects"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-sm text-[var(--color-primary)] hover:underline"
+              >
+                <ExternalLink size={14} />
+                Edit on GitHub
+              </Link>
             </div>
             <div className="grid gap-4">
               {mockProjects.map((project, index) => (
@@ -95,7 +108,7 @@ export default function KeystaticPage() {
                 >
                   <div>
                     <h3 className="font-heading text-lg">{project.title}</h3>
-                    <span className="text-sm text-[var(--color-text-tertiary)]">
+                    <span className="text-sm text-[var(--color-text-tertiary)] font-mono">
                       src/content/projects/{project.slug}.yaml
                     </span>
                   </div>
@@ -103,9 +116,12 @@ export default function KeystaticPage() {
                     <span className="px-2 py-1 rounded text-xs bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20">
                       {project.category}
                     </span>
-                    <button className="p-2 rounded hover:bg-[var(--color-bg)] transition-colors">
-                      <Edit size={16} className="text-[var(--color-text-secondary)]" />
-                    </button>
+                    <Link
+                      href={`/projects/${project.slug}`}
+                      className="p-2 rounded hover:bg-[var(--color-bg)] transition-colors"
+                    >
+                      <ExternalLink size={16} className="text-[var(--color-text-secondary)]" />
+                    </Link>
                   </div>
                 </motion.div>
               ))}
@@ -118,9 +134,15 @@ export default function KeystaticPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-heading text-xl">Certifications</h2>
-              <span className="text-sm text-[var(--color-text-tertiary)]">
-                Edit files in src/content/certifications/
-              </span>
+              <Link
+                href="https://github.com/EevnxyEgo/arsenius-portfolio/edit/main/src/content/certifications"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-sm text-[var(--color-primary)] hover:underline"
+              >
+                <ExternalLink size={14} />
+                Edit on GitHub
+              </Link>
             </div>
             <div className="grid gap-4">
               {mockCerts.map((cert, index) => (
@@ -133,7 +155,7 @@ export default function KeystaticPage() {
                 >
                   <div>
                     <h3 className="font-heading text-lg">{cert.title}</h3>
-                    <span className="text-sm text-[var(--color-text-tertiary)]">
+                    <span className="text-sm text-[var(--color-text-tertiary)] font-mono">
                       src/content/certifications/*.yaml
                     </span>
                   </div>
@@ -142,7 +164,7 @@ export default function KeystaticPage() {
                       {cert.category}
                     </span>
                     <button className="p-2 rounded hover:bg-[var(--color-bg)] transition-colors">
-                      <Edit size={16} className="text-[var(--color-text-secondary)]" />
+                      <ExternalLink size={16} className="text-[var(--color-text-secondary)]" />
                     </button>
                   </div>
                 </motion.div>
@@ -151,27 +173,32 @@ export default function KeystaticPage() {
           </div>
         )}
 
-        {/* Info Box */}
-        <div className="mt-12 p-6 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]">
-          <h3 className="font-heading text-lg mb-2">Content Management</h3>
-          <p className="text-sm text-[var(--color-text-secondary)] mb-4">
-            Portfolio content is managed through YAML files in the <code className="bg-[var(--color-bg)] px-2 py-1 rounded">src/content/</code> directory.
-            Edit these files directly to update project details, certifications, and other content.
-          </p>
-          <div className="flex gap-4">
-            <Link
-              href="/projects"
-              className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-glow)] transition-colors"
-            >
-              View Projects →
-            </Link>
-            <Link
-              href="/certifications"
-              className="text-sm text-[var(--color-accent)] hover:text-[var(--color-accent-glow)] transition-colors"
-            >
-              View Certifications →
-            </Link>
-          </div>
+        {/* Quick Links */}
+        <div className="mt-12 grid grid-cols-3 gap-6">
+          <Link
+            href="/projects"
+            className="p-6 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-primary)] transition-colors"
+          >
+            <FileText size={24} className="text-[var(--color-primary)] mb-3" />
+            <h3 className="font-heading text-lg mb-1">View Projects</h3>
+            <p className="text-sm text-[var(--color-text-tertiary)]">Browse all portfolio projects</p>
+          </Link>
+          <Link
+            href="/certifications"
+            className="p-6 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-colors"
+          >
+            <Award size={24} className="text-[var(--color-accent)] mb-3" />
+            <h3 className="font-heading text-lg mb-1">View Certifications</h3>
+            <p className="text-sm text-[var(--color-text-tertiary)]">Browse all certificates</p>
+          </Link>
+          <Link
+            href="/"
+            className="p-6 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-text-secondary)] transition-colors"
+          >
+            <ExternalLink size={24} className="text-[var(--color-text-secondary)] mb-3" />
+            <h3 className="font-heading text-lg mb-1">Homepage</h3>
+            <p className="text-sm text-[var(--color-text-tertiary)]">Return to portfolio site</p>
+          </Link>
         </div>
       </main>
     </div>
