@@ -3,8 +3,7 @@
 import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ExternalLink, FileText, ChevronLeft, ChevronRight } from "lucide-react";
-import { FaGithub } from "react-icons/fa";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Project } from "@/types/project";
 
 // ── Project Card Data ───────────────────────────────────────────────────────────
@@ -197,7 +196,7 @@ function ProjectCard({
         if (isCenter) {
           onFlip();
         } else {
-          // Click on side card to navigate to it
+          // Side cards will navigate when clicked — coming in a future update
         }
       }}
     >
@@ -327,127 +326,126 @@ function ProjectCard({
           />
         </div>
 
-        {/* Back Face */}
+        {/* Back Face — Full Project Details */}
         <div
-          className="absolute inset-0 rounded-2xl p-6"
+          className="absolute inset-0 rounded-2xl p-5 overflow-y-auto"
           style={{
-            background: "var(--color-bg-elevated)",
+            background: `linear-gradient(160deg, var(--color-bg-elevated) 0%, ${accent}08 100%)`,
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)",
-            border: "1px solid var(--color-border)",
+            border: `1px solid ${accent}30`,
           }}
         >
-          {/* Back header */}
-          <div className="flex items-center justify-between mb-4">
-            <h3
-              className="text-xl font-bold italic"
+          {/* Header row: Category + Year + Status */}
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span
+                className="px-2 py-0.5 rounded-full text-[0.6rem] font-mono uppercase tracking-wider"
+                style={{
+                  background: `${accent}20`,
+                  color: accent,
+                  border: `1px solid ${accent}40`,
+                }}
+              >
+                {project.category}
+              </span>
+              <span
+                className="px-2 py-0.5 rounded text-[0.6rem] font-mono"
+                style={{ background: "rgba(0,0,0,0.3)", color: "rgba(255,255,255,0.5)" }}
+              >
+                {project.year}
+              </span>
+            </div>
+            {/* Status pill */}
+            <span
+              className="px-2 py-0.5 rounded-full text-[0.55rem] font-mono"
               style={{
-                color: "var(--color-text)",
-                fontFamily: "var(--font-playfair)",
+                background: project.status === "active" ? "rgba(74,197,94,0.15)" : project.status === "archived" ? "rgba(156,163,175,0.15)" : "rgba(234,179,8,0.15)",
+                color: project.status === "active" ? "#4ade80" : project.status === "archived" ? "#9ca3af" : "#eab308",
               }}
             >
-              {project.title}
-            </h3>
-            <span
-              className="text-xs font-mono px-2 py-1 rounded"
-              style={{ background: `${accent}20`, color: accent }}
-            >
-              {project.year}
+              {project.status}
             </span>
           </div>
 
-          {/* Details */}
-          <div className="space-y-4">
-            <div>
-              <span className="text-[0.65rem] font-mono uppercase tracking-wider" style={{ color: "var(--color-text-tertiary)" }}>
-                My Role
-              </span>
-              <p className="text-sm mt-1" style={{ color: "var(--color-text)" }}>
-                {project.myRole}
-              </p>
-            </div>
+          {/* Title + Tagline */}
+          <h3
+            className="text-base font-bold mb-1"
+            style={{
+              color: "var(--color-text)",
+              fontFamily: "var(--font-bebas)",
+              letterSpacing: "0.05em",
+              textShadow: `0 0 20px ${accent}30`,
+            }}
+          >
+            {project.title}
+          </h3>
+          <p className="text-[0.7rem] leading-relaxed mb-3" style={{ color: "var(--color-text-secondary)" }}>
+            {project.tagline}
+          </p>
 
-            <div>
-              <span className="text-[0.65rem] font-mono uppercase tracking-wider" style={{ color: "var(--color-text-tertiary)" }}>
-                Impact
-              </span>
-              <p className="text-sm mt-1" style={{ color: "var(--color-text-secondary)" }}>
-                {project.impact}
-              </p>
-            </div>
-
-            <div>
-              <span className="text-[0.65rem] font-mono uppercase tracking-wider" style={{ color: "var(--color-text-tertiary)" }}>
-                Tech Stack
-              </span>
-              <div className="flex gap-2 flex-wrap mt-2">
-                {project.techStack.map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-2 py-0.5 rounded text-[0.6rem] font-mono"
-                    style={{
-                      background: accent,
-                      color: "#000",
-                      opacity: 0.9,
-                    }}
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
+          {/* Overview section */}
+          <div className="mb-2">
+            <span className="text-[0.55rem] font-mono uppercase tracking-widest" style={{ color: accent }}>
+              Overview
+            </span>
+            <p className="text-[0.72rem] leading-relaxed mt-0.5 line-clamp-2" style={{ color: "var(--color-text-secondary)" }}>
+              {project.summary}
+            </p>
           </div>
 
-          {/* Links */}
-          <div className="flex gap-3 mt-auto pt-4">
-            {project.links?.github && (
-              <a
-                href={project.links.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg transition-colors hover:bg-[var(--color-bg)]"
-                style={{ background: "var(--color-bg)" }}
-              >
-                <FaGithub size={18} style={{ color: "var(--color-text-secondary)" }} />
-              </a>
-            )}
-            {project.links?.demo && (
-              <a
-                href={project.links.demo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg transition-colors hover:bg-[var(--color-bg)]"
-                style={{ background: "var(--color-bg)" }}
-              >
-                <ExternalLink size={18} style={{ color: "var(--color-text-secondary)" }} />
-              </a>
-            )}
-            {project.links?.report && (
-              <a
-                href={project.links.report}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg transition-colors hover:bg-[var(--color-bg)]"
-                style={{ background: "var(--color-bg)" }}
-              >
-                <FileText size={18} style={{ color: "var(--color-text-secondary)" }} />
-              </a>
-            )}
-            <Link
-              href={`/projects/${project.slug}`}
-              className="ml-auto px-4 py-2 rounded-lg text-sm font-medium transition-all hover:scale-105"
-              style={{
-                background: accent,
-                color: "#000",
-              }}
-            >
-              Details →
-            </Link>
+          {/* My Role section */}
+          <div className="mb-2">
+            <span className="text-[0.55rem] font-mono uppercase tracking-widest" style={{ color: accent }}>
+              My Role
+            </span>
+            <p className="text-[0.72rem] leading-relaxed mt-0.5" style={{ color: "var(--color-text-secondary)" }}>
+              {project.myRole}
+            </p>
           </div>
+
+          {/* Impact section */}
+          <div className="mb-3">
+            <span className="text-[0.55rem] font-mono uppercase tracking-widest" style={{ color: accent }}>
+              Impact
+            </span>
+            <p className="text-[0.72rem] leading-relaxed mt-0.5" style={{ color: "var(--color-text)" }}>
+              {project.impact}
+            </p>
+          </div>
+
+          {/* Tech Stack — ALL pills */}
+          <div className="flex flex-wrap gap-1 mb-3">
+            {project.techStack.map((tech) => (
+              <span
+                key={tech}
+                className="px-1.5 py-0.5 rounded text-[0.55rem] font-mono"
+                style={{
+                  background: `${accent}15`,
+                  color: accent,
+                  border: `1px solid ${accent}30`,
+                }}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          {/* View Full link */}
+          <Link
+            href={`/projects/${project.slug}`}
+            className="flex items-center justify-center gap-1 w-full py-2 rounded-lg text-xs font-medium transition-all"
+            style={{
+              background: accent,
+              color: "var(--color-text-inverse)",
+            }}
+          >
+            View Full →
+          </Link>
 
           {/* Back hint */}
-          <div className="absolute bottom-4 left-4 text-xs" style={{ color: "var(--color-text-tertiary)" }}>
-            ← Click to flip back
+          <div className="text-center mt-2 text-[0.55rem]" style={{ color: "var(--color-text-tertiary)" }}>
+            ← Click card to flip back
           </div>
         </div>
       </div>
@@ -542,7 +540,10 @@ export function ProjectDeckSection() {
 
             <div className="flex items-center gap-2">
               <button
-                onClick={() => navigateCard("left")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigateCard("left")
+                }}
                 disabled={currentIndex === 0}
                 className="p-3 rounded-xl disabled:opacity-30 transition-all hover:scale-105 active:scale-95"
                 style={{
@@ -554,7 +555,10 @@ export function ProjectDeckSection() {
                 <ChevronLeft size={20} style={{ color: "var(--color-text)" }} />
               </button>
               <button
-                onClick={() => navigateCard("right")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigateCard("right")
+                }}
                 disabled={currentIndex === projects.length - 1}
                 className="p-3 rounded-xl disabled:opacity-30 transition-all hover:scale-105 active:scale-95"
                 style={{
@@ -654,8 +658,8 @@ export function ProjectDeckSection() {
                 <span
                   className="px-2 py-0.5 rounded text-[0.6rem] font-mono uppercase"
                   style={{
-                    background: `${accentColors[project.category]}20`,
-                    color: accentColors[project.category],
+                    background: `${accentColors[project.category] || "#00ff88"}20`,
+                    color: accentColors[project.category] || "#00ff88",
                   }}
                 >
                   {project.category}
