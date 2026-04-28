@@ -397,6 +397,7 @@ body {
   border-color: var(--tag-accent, var(--color-border-strong));
   color: var(--tag-accent, var(--color-text));
   background: var(--color-bg-subtle);
+  transform: scale(1.05);
 }
 
 /* ── Pull Quote ──────────────────────────────────────────────────────────────── */

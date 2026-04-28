@@ -2,6 +2,23 @@
 
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import { skillProficiency, categoryMap } from "@/components/gamification/data/skillConfig";
+
+const TheLabPanel = dynamic(
+  () => import("@/components/gamification/TheLabPanel").then((m) => m.TheLabPanel),
+  { ssr: false, loading: () => <div className="w-[200px] shrink-0" /> }
+);
+
+const ServerRoomPanel = dynamic(
+  () => import("@/components/gamification/ServerRoomPanel").then((m) => m.ServerRoomPanel),
+  { ssr: false, loading: () => <div className="w-[200px] shrink-0" /> }
+);
+
+const SkillQuestMap = dynamic(
+  () => import("@/components/gamification/SkillQuestMap").then((m) => m.SkillQuestMap),
+  { ssr: false, loading: () => <div className="h-28" /> }
+);
 
 // ─── Skill descriptions map ────────────────────────────────────────────────────
 const skillDescriptions: Record<string, string> = {
@@ -111,12 +128,16 @@ function SkillTag({
   delay,
   reduced,
   description,
+  onHover,
+  onLeave,
 }: {
   skill: string;
   accent: string;
   delay: number;
   reduced: boolean;
   description?: string;
+  onHover?: (skill: string) => void;
+  onLeave?: () => void;
 }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const initialState = reduced
@@ -125,6 +146,8 @@ function SkillTag({
   const animateState = reduced
     ? undefined
     : { opacity: 1, scale: 1 };
+
+  const profLevel = skillProficiency[skill] || 1;
 
   return (
     <div className="relative inline-block">
@@ -139,21 +162,38 @@ function SkillTag({
             "--tag-accent": accent,
           } as React.CSSProperties
         }
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
+        onMouseEnter={() => {
+          setShowTooltip(true);
+          onHover?.(skill);
+        }}
+        onMouseLeave={() => {
+          setShowTooltip(false);
+          onLeave?.();
+        }}
         onClick={() => {
           const event = new CustomEvent("skillfilter", { detail: { skill }, bubbles: true });
           document.dispatchEvent(event);
         }}
       >
         {skill}
+        <span className="ml-1.5 flex gap-[3px] inline-block align-middle">
+          {[1, 2, 3].map(level => (
+            <span
+              key={level}
+              className="w-[5px] h-[5px] rounded-full inline-block"
+              style={{
+                background: level <= profLevel ? accent : `${accent}30`,
+              }}
+            />
+          ))}
+        </span>
       </motion.span>
       {showTooltip && description && (
         <div
           className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap z-50 pointer-events-none"
         >
           <div
-            className="bg-[var(--color-bg-inverse)] text-[var(--color-text-inverse)] px-3 py-1.5 rounded-full font-mono text-[0.75rem]"
+            className="bg-[var(--color-bg-elevated)] text-[var(--color-text-inverse)] px-3 py-1.5 rounded-full font-mono text-[0.75rem]"
           >
             {description}
           </div>
@@ -169,10 +209,14 @@ function SkillGroup({
   group,
   groupIndex,
   reduced,
+  onSkillHover,
+  onSkillLeave,
 }: {
   group: (typeof skillGroups)[number];
   groupIndex: number;
   reduced: boolean;
+  onSkillHover?: (skill: string) => void;
+  onSkillLeave?: () => void;
 }) {
   const baseDelay = groupIndex * 0.08;
 
@@ -202,6 +246,8 @@ function SkillGroup({
             delay={baseDelay + i * 0.03}
             reduced={reduced}
             description={skillDescriptions[skill]}
+            onHover={onSkillHover}
+            onLeave={onSkillLeave}
           />
         ))}
       </div>
@@ -220,6 +266,7 @@ export function SkillsSection() {
   const prefersReduced = useReducedMotion();
   const reduced = prefersReduced === true;
   const [activeSkill, setActiveSkill] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -248,71 +295,89 @@ export function SkillsSection() {
       className="relative py-[clamp(5rem,10vw,8rem)] bg-[var(--color-bg-elevated)]"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        {/* ── 2-column grid ─────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-12 lg:gap-16 items-start">
+        {/* ── 3-column flex layout ─────────────────────────────────── */}
+        <div className="flex gap-8 items-start">
 
-          {/* ── LEFT: sticky section header ───────────────────────── */}
-          <div className="lg:sticky lg:top-[calc(2rem+var(--scroll-offset,0px))] self-start">
-            <motion.div
-              initial={headerInitial}
-              whileInView={headerAnimate}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.5 }}
-            >
-              {/* Eyebrow */}
-              <span
-                className="section-eyebrow block mb-3"
-                style={{ fontFamily: "var(--font-mono)" }}
+          {/* ── LEFT: The Lab ─────────────────────────────────────── */}
+          <TheLabPanel activeCategory={activeCategory} activeSkill={activeSkill} />
+
+          {/* ── CENTER: Section header + skill groups ─────────────── */}
+          <div className="flex-1 min-w-0">
+            {/* Sticky header */}
+            <div className="lg:sticky lg:top-[calc(2rem+var(--scroll-offset,0px))] self-start mb-8">
+              <motion.div
+                initial={headerInitial}
+                whileInView={headerAnimate}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.5 }}
               >
-                What I work with
-              </span>
+                <span className="section-eyebrow block mb-3">What I work with</span>
+                <h2
+                  className="mb-4"
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontSize: "clamp(2rem, 3.5vw, 2.5rem)",
+                    lineHeight: 1.15,
+                    color: "var(--color-text)",
+                  }}
+                >
+                  My technical
+                  <br />
+                  arsenal.
+                </h2>
+                <p
+                  className="text-sm"
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    color: "var(--color-text-secondary)",
+                    lineHeight: 1.65,
+                  }}
+                >
+                  From training ML models to shipping production web apps.
+                </p>
+              </motion.div>
+            </div>
 
-              {/* Heading */}
-              <h2
-                className="mb-4"
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "clamp(2rem, 3.5vw, 2.5rem)",
-                  lineHeight: 1.15,
-                  color: "var(--color-text)",
-                }}
-              >
-                My technical
-                <br />
-                arsenal.
-              </h2>
-
-              {/* Sub copy */}
-              <p
-                className="text-sm"
-                style={{
-                  fontFamily: "var(--font-body)",
-                  color: "var(--color-text-secondary)",
-                  lineHeight: 1.65,
-                }}
-              >
-                From training ML models to shipping production web apps.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* ── RIGHT: skill group tag clouds ─────────────────────── */}
-          <div className="flex flex-col gap-6">
+            {/* Skill groups */}
             {skillGroups.map((group, i) => (
               <SkillGroup
                 key={group.label}
                 group={group}
                 groupIndex={i}
                 reduced={reduced}
+                onSkillHover={(skill) => setActiveCategory(categoryMap[skill] || null)}
+                onSkillLeave={() => setActiveCategory(null)}
               />
             ))}
           </div>
+
+          {/* ── RIGHT: The Server Room ─────────────────────────────── */}
+          <ServerRoomPanel activeCategory={activeCategory} activeSkill={activeSkill} />
+        </div>
+
+        {/* ── Skill Quest Map ──────────────────────────────────────── */}
+        <div className="mt-10">
+          <SkillQuestMap
+            activeCategory={activeCategory}
+            onCategorySelect={(cat) => setActiveCategory(cat)}
+          />
+        </div>
+
+        {/* ── Hint for desktop users ───────────────────────────────── */}
+        <div className="hidden lg:block text-center mt-4">
+          <span className="font-mono text-[0.65rem]" style={{ color: "var(--color-text-tertiary)" }}>
+            Hover skills to explore &middot; Click zones to filter
+          </span>
         </div>
       </div>
 
       {/* Clear filter banner */}
       {activeSkill && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-full px-5 py-2 shadow-lg">
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-[var(--color-bg-elevated)] border border-[var(--color-border)] rounded-full px-5 py-2 shadow-lg"
+        >
           <span className="font-mono text-xs text-[var(--color-text-secondary)]">
             Showing projects with <strong className="text-[var(--color-primary)]">{activeSkill}</strong>
           </span>
