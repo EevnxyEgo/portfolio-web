@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 
 // ---------------------------------------------------------------------------
@@ -42,6 +42,7 @@ export function useGameState() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [prevLevel, setPrevLevel] = useState(0);
+  const levelUpTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -61,9 +62,13 @@ export function useGameState() {
       const newLevel = getLevel(newXp);
       const oldLevel = getLevel(prev.xp);
       if (newLevel > oldLevel) {
+        if (levelUpTimerRef.current) clearTimeout(levelUpTimerRef.current);
         setPrevLevel(oldLevel);
         setShowLevelUp(true);
-        setTimeout(() => setShowLevelUp(false), 2000);
+        levelUpTimerRef.current = setTimeout(() => {
+          setShowLevelUp(false);
+          levelUpTimerRef.current = null;
+        }, 2000);
       }
       const next: GameState = { ...prev, xp: newXp };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));

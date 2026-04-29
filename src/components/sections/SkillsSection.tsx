@@ -411,7 +411,7 @@ export function SkillsSection() {
       setCurrentLearningIndex((prev) => (prev + 1) % currentlyLearning.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [currentlyLearning.length]);
 
   // ── Determine which particle color to use ─────────────────────────────
   const particleColor = (() => {
@@ -419,11 +419,6 @@ export function SkillsSection() {
     const style = categoryStyles[activeCategory];
     return style?.hover?.border ?? "var(--color-primary)";
   })();
-
-  // ── Determine which groups to show (filtered vs all) ──────────────────
-  const filteredGroupIndex = filterCategory
-    ? skillGroups.findIndex((g) => g.label === filterCategory)
-    : -1;
 
   // ── Header animation ──────────────────────────────────────────────────
   const headerInitial = reduced ? undefined : { opacity: 0, y: 20 };

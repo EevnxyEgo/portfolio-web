@@ -175,6 +175,7 @@ function ProjectCard({
       ref={cardRef}
       className="absolute cursor-pointer"
       style={{
+        perspective: 1000,
         left: "50%",
         top: "50%",
         x: `calc(-50% + ${offsetX}px)`,
@@ -182,6 +183,8 @@ function ProjectCard({
         scale,
         opacity,
         zIndex,
+        width: 320,
+        height: 400,
       }}
       initial={false}
       animate={{

@@ -1,17 +1,8 @@
 "use client";
 
+import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
-
-interface Particle {
-  id: number;
-  x: number;
-  y: number;
-  angle: number;
-  speed: number;
-  color: string;
-  size: number;
-}
 
 interface ParticleEmitterProps {
   x: number;
@@ -28,24 +19,25 @@ export function ParticleEmitter({
   count = 12,
   active,
 }: ParticleEmitterProps) {
+  // Deterministic seed: count+color change on each new activation for fresh particles.
+  // No Math.random — ESLint react-hooks/purity rule compliance.
   const particles = useMemo(() => {
-    if (!active) return [];
     return Array.from({ length: count }, (_, i) => ({
       id: i,
-      angle: (360 / count) * i + Math.random() * 20 - 10,
-      speed: 40 + Math.random() * 30,
-      size: 3 + Math.random() * 3,
+      angle: (360 / count) * i + ((i * 137.508) % 20 - 10),
+      speed: 40 + ((i * 31) % 30),
+      size: 3 + ((i * 17) % 3),
       color,
     }));
-  }, [active, count, color]);
+  }, [count, color]);
 
   if (!active) return null;
+  const container =
+    typeof document !== "undefined" ? document.body : null;
+  if (!container) return null;
 
-  return (
-    <div
-      className="pointer-events-none fixed inset-0 z-50"
-      style={{ overflow: "hidden" }}
-    >
+  return createPortal(
+    <div className="pointer-events-none" style={{ overflow: "hidden" }}>
       {particles.map((p) => {
         const rad = (p.angle * Math.PI) / 180;
         const tx = Math.cos(rad) * p.speed;
@@ -73,6 +65,7 @@ export function ParticleEmitter({
           />
         );
       })}
-    </div>
+    </div>,
+    container
   );
 }

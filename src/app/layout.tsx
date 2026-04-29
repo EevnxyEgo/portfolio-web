@@ -13,6 +13,7 @@ import { ScrollProgress } from "@/components/shared/ScrollProgress";
 import { SmartCursor } from "@/components/shared/SmartCursor";
 import { PuzzlePortal } from "@/components/shared/PuzzlePortal";
 import { ScrollParticlesWrapper } from "@/components/shared/ScrollParticlesWrapper";
+import { ToastProvider } from "@/components/gamification/ToastNotification";
 
 const bebasNeue = Bebas_Neue({
   subsets: ["latin"],
@@ -116,12 +117,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={`min-h-screen flex flex-col antialiased cursor-none ${bebasNeue.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable}`}>
         <ThemeProvider>
+          <ToastProvider>
           <SmartCursor />
           <ScrollProgress />
           <PuzzlePortal />
           <ScrollParticlesWrapper />
           <JsonLd />
           {children}
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>
