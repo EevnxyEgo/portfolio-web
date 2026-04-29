@@ -223,7 +223,7 @@ function Node({ skill, onHover, onLeave, onClick, isActive }: {
               key={star}
               className="w-1.5 h-1.5 rounded-full"
               style={{
-                backgroundColor: star <= skill.level ? color : "transparent",
+                backgroundColor: star <= skill.level ? color : "rgba(0,0,0,0)",
                 border: star > skill.level ? `1px solid var(--color-border)` : "none",
               }}
             />
