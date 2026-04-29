@@ -10,14 +10,31 @@ interface ServerRoomPanelProps {
 }
 
 function ServerLED({ isActive, color, isProcessing, index }: { isActive: boolean; color: string; isProcessing: boolean; index: number }) {
+  const prefersReduced = useReducedMotion();
   const idleColor = index % 2 === 0 ? '#E8330A' : '#00D4FF';
   const effectiveColor = isProcessing ? color : idleColor;
+  const effectiveIsActive = isProcessing ? true : isActive;
+
+  if (isProcessing && !prefersReduced) {
+    return (
+      <motion.div
+        className="w-2 h-2 rounded-sm"
+        animate={{ opacity: [1, 0.1, 1, 0.1, 1, 0.1, 1] }}
+        transition={{ duration: 0.4, repeat: Infinity, ease: 'linear' }}
+        style={{
+          background: effectiveColor,
+          boxShadow: `0 0 4px ${effectiveColor}`,
+        }}
+      />
+    );
+  }
+
   return (
     <div
       className="w-2 h-2 rounded-sm"
       style={{
-        background: isActive ? effectiveColor : `${effectiveColor}40`,
-        boxShadow: isActive ? `0 0 4px ${effectiveColor}` : 'none',
+        background: effectiveIsActive ? effectiveColor : `${effectiveColor}40`,
+        boxShadow: effectiveIsActive ? `0 0 4px ${effectiveColor}` : 'none',
       }}
     />
   );
@@ -115,7 +132,7 @@ export function ServerRoomPanel({ activeCategory, activeSkill }: ServerRoomPanel
         <span className="font-mono text-[0.6rem] tracking-widest uppercase" style={{ color: 'var(--color-text-tertiary)' }}>
           THE SERVER ROOM
         </span>
-        <span className="font-mono text-[0.55rem]" style={{ color: '#4ade80' }}>
+        <span className="font-mono text-[0.55rem]" style={{ color: temperature > 7 ? '#ef4444' : '#4ade80' }}>
           UPTIME: {uptime.toFixed(1)}%
         </span>
       </div>
@@ -144,17 +161,22 @@ export function ServerRoomPanel({ activeCategory, activeSkill }: ServerRoomPanel
               exit={{ opacity: 0, height: 0 }}
               className="mt-2"
             >
-              <div className="font-mono text-[0.55rem] mb-1" style={{ color: 'var(--color-text-tertiary)' }}>
-                LOADING: {loadingSkill}
-              </div>
-              <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: '#2C2825' }}>
-                <motion.div
-                  className="h-full rounded-full"
-                  style={{ background: ledColor }}
-                  animate={{ width: ['0%', '80%', '40%', '100%'] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                />
-              </div>
+              <motion.div
+                animate={prefersReduced ? {} : { x: [0, -1, 1, -1, 0] }}
+                transition={prefersReduced ? {} : { duration: 0.3, repeat: Infinity }}
+              >
+                <div className="font-mono text-[0.55rem] mb-1" style={{ color: 'var(--color-text-tertiary)' }}>
+                  LOADING: {loadingSkill}
+                </div>
+                <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: '#2C2825' }}>
+                  <motion.div
+                    className="h-full rounded-full"
+                    style={{ background: ledColor, originX: 0, scaleX: 0 }}
+                    animate={prefersReduced ? { scaleX: 1 } : { scaleX: [0, 0.8, 0.4, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -169,7 +191,13 @@ export function ServerRoomPanel({ activeCategory, activeSkill }: ServerRoomPanel
               {temperature}0°C
             </span>
           </div>
-          <div className="flex gap-[2px]">
+          <motion.div
+            className="flex gap-[2px]"
+            animate={temperature > 5 && !prefersReduced ? {
+              boxShadow: [`0 0 4px ${tempColor}`, `0 0 16px ${tempColor}`, `0 0 4px ${tempColor}`],
+            } : {}}
+            transition={temperature > 5 && !prefersReduced ? { duration: 1.2, repeat: Infinity } : {}}
+          >
             {Array.from({ length: 10 }).map((_, i) => (
               <div
                 key={i}
@@ -179,7 +207,7 @@ export function ServerRoomPanel({ activeCategory, activeSkill }: ServerRoomPanel
                 }}
               />
             ))}
-          </div>
+          </motion.div>
           {temperature > 7 && !prefersReduced && (
             <div className="flex gap-1 mt-1">
               {[0, 1, 2].map(i => (
