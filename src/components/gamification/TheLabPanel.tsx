@@ -1,10 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useReducedMotion } from 'framer-motion';
 import { PixelSprite } from './PixelSprite';
 import { developerCharacter, monitorSprite, deskSprite, coffeeCup } from './data/characterSprites';
+
+// Pre-sliced character sprite sections (Issue 3)
+const headPixels    = developerCharacter.slice(0, 5);   // rows 0-4: head
+const bodyPixels    = developerCharacter.slice(5, 15);  // rows 5-14: torso + legs
+const armsPixels    = developerCharacter.slice(15, 20); // rows 15-19: arms + keyboard
 import { monitorContent } from './data/monitorContent';
 
 interface TheLabPanelProps {
@@ -15,6 +20,18 @@ interface TheLabPanelProps {
 export function TheLabPanel({ activeCategory, activeSkill }: TheLabPanelProps) {
   const prefersReduced = useReducedMotion();
   const [statusText, setStatusText] = useState('// coding in progress...');
+  const prevActiveSkillRef = useRef<string | null>(null);
+  const [isJumping, setIsJumping] = useState(false);
+
+  // Detect transition from null to non-null activeSkill → trigger jump
+  useEffect(() => {
+    if (activeSkill && prevActiveSkillRef.current === null && !prefersReduced) {
+      setIsJumping(true);
+      const timer = setTimeout(() => setIsJumping(false), 600);
+      return () => clearTimeout(timer);
+    }
+    prevActiveSkillRef.current = activeSkill;
+  }, [activeSkill, prefersReduced]);
 
   // Update status text based on active category
   useEffect(() => {
@@ -64,6 +81,42 @@ export function TheLabPanel({ activeCategory, activeSkill }: TheLabPanelProps) {
           {/* Monitor with dynamic content */}
           <div className="relative">
             <PixelSprite pixels={monitorSprite} pixelSize={4} />
+            {/* Monitor flicker when skill is hovered */}
+            {!prefersReduced && (
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                animate={{
+                  opacity: activeSkill
+                    ? [1, 0.7, 1, 0.8, 1, 0.85, 1, 0.75, 1]
+                    : 1,
+                }}
+                transition={{
+                  duration: activeSkill ? 1.2 : 0,
+                  repeat: activeSkill ? Infinity : 0,
+                  repeatDelay: activeSkill ? 0.4 : 0,
+                  ease: 'easeInOut',
+                }}
+              />
+            )}
+            {/* Notification dot — blinks when skill is active */}
+            <AnimatePresence>
+              {activeSkill && (
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute w-2 h-2 rounded-full"
+                  style={{
+                    background: 'var(--color-primary)',
+                    top: -2,
+                    right: -2,
+                    boxShadow: '0 0 4px var(--color-primary)',
+                    animation: 'notificationPulse 1s ease-in-out infinite',
+                  }}
+                />
+              )}
+            </AnimatePresence>
             {/* Code lines overlay — positioned to match monitor screen area */}
             <div
               className="absolute top-4 left-3 flex flex-col gap-[1px]"
@@ -87,24 +140,46 @@ export function TheLabPanel({ activeCategory, activeSkill }: TheLabPanelProps) {
           {/* Desk + Character row */}
           <div className="flex items-end gap-1">
             {/* Character */}
-            <div
+            <motion.div
               className="relative"
-              style={{
-                transform: activeSkill ? 'rotate(-5deg) translateY(-1px)' : 'rotate(0deg) translateY(0px)',
-                transition: 'transform 0.3s ease',
-              }}
+              animate={
+                isJumping
+                  ? { y: [0, -8, 0] }
+                  : { y: activeSkill ? -1 : 0 }
+              }
+              transition={
+                isJumping
+                  ? { duration: 0.6, ease: [0.36, 0.07, 0.19, 0.97] }
+                  : { duration: 0.3, ease: 'easeOut' }
+              }
+              style={{ display: 'flex', flexDirection: 'column' }}
             >
-              <PixelSprite pixels={developerCharacter} pixelSize={4} />
+              {/* Head — tilts when skill is hovered (Issue 2: Framer Motion) */}
+              <motion.div
+                animate={activeSkill ? { rotate: -8, x: -2 } : { rotate: 0, x: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                style={{ display: 'flex' }}
+              >
+                <PixelSprite pixels={headPixels} pixelSize={4} />
+              </motion.div>
+              {/* Body (torso + legs) */}
+              <PixelSprite pixels={bodyPixels} pixelSize={4} />
+              {/* Arms + keyboard */}
+              <PixelSprite pixels={armsPixels} pixelSize={4} />
               {/* Typing animation on hand */}
               {!prefersReduced && (
                 <motion.div
                   className="absolute w-2 h-2 rounded-sm"
                   style={{ background: '#C8956C', bottom: 2, right: 4 }}
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{ duration: 0.5, repeat: Infinity, ease: 'easeInOut' }}
+                  animate={{ y: activeSkill ? [0, -2, 0, -4, 0] : [0, -4, 0] }}
+                  transition={{
+                    duration: activeSkill ? 0.3 : 0.5,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
                 />
               )}
-            </div>
+            </motion.div>
             <PixelSprite pixels={deskSprite} pixelSize={4} />
           </div>
 
@@ -112,21 +187,72 @@ export function TheLabPanel({ activeCategory, activeSkill }: TheLabPanelProps) {
           <div className="flex items-end gap-1 mt-1">
             <div className="relative">
               <PixelSprite pixels={coffeeCup} pixelSize={4} />
-              {/* Steam dots */}
+              {/* Steam dots — more and faster when skill is hovered */}
               {!prefersReduced && (
                 <>
                   <motion.div
                     className="absolute w-1 h-1 rounded-full"
                     style={{ background: 'rgba(247,243,238,0.6)', top: -2, left: 2 }}
-                    animate={{ y: [-2, -6], opacity: [0.6, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
+                    animate={{
+                      y: activeSkill ? [-2, -12] : [-2, -6],
+                      opacity: [0.6, 0],
+                      scale: activeSkill ? [1, 1.5, 0.8] : [1, 0.8],
+                    }}
+                    transition={{
+                      duration: activeSkill ? 0.8 : 1.5,
+                      repeat: Infinity,
+                      delay: 0,
+                    }}
                   />
                   <motion.div
                     className="absolute w-1 h-1 rounded-full"
                     style={{ background: 'rgba(247,243,238,0.4)', top: -2, left: 4 }}
-                    animate={{ y: [-2, -8], opacity: [0.4, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                    animate={{
+                      y: activeSkill ? [-2, -14] : [-2, -8],
+                      opacity: [0.4, 0],
+                      scale: activeSkill ? [1, 1.8, 0.8] : [1, 0.8],
+                    }}
+                    transition={{
+                      duration: activeSkill ? 1.0 : 2,
+                      repeat: Infinity,
+                      delay: 0.5,
+                    }}
                   />
+                  {/* Extra steam particles when skill is hovered */}
+                  <AnimatePresence>
+                    {activeSkill && (
+                      <>
+                        <motion.div
+                          key="steam-0"
+                          className="absolute w-[3px] h-[3px] rounded-full"
+                          style={{ background: 'rgba(247,243,238,0.5)', top: -4, left: 0 }}
+                          animate={{ y: [-4, -16], opacity: [0.5, 0], scale: [1, 2, 0.5] }}
+                          transition={{ duration: 0.7, repeat: Infinity, delay: 0.15 }}
+                        />
+                        <motion.div
+                          key="steam-1"
+                          className="absolute w-[3px] h-[3px] rounded-full"
+                          style={{ background: 'rgba(247,243,238,0.5)', top: -4, left: 6 }}
+                          animate={{ y: [-4, -18], opacity: [0.5, 0], scale: [1, 2, 0.5] }}
+                          transition={{ duration: 0.9, repeat: Infinity, delay: 0.3 }}
+                        />
+                        <motion.div
+                          key="steam-2"
+                          className="absolute w-1 h-1 rounded-full"
+                          style={{ background: 'rgba(247,243,238,0.3)', top: -2, left: 8 }}
+                          animate={{ y: [-2, -12], opacity: [0.3, 0] }}
+                          transition={{ duration: 1.1, repeat: Infinity, delay: 0.1 }}
+                        />
+                        <motion.div
+                          key="steam-3"
+                          className="absolute w-1 h-1 rounded-full"
+                          style={{ background: 'rgba(247,243,238,0.3)', top: -2, left: -2 }}
+                          animate={{ y: [-2, -10], opacity: [0.3, 0] }}
+                          transition={{ duration: 1.3, repeat: Infinity, delay: 0.6 }}
+                        />
+                      </>
+                    )}
+                  </AnimatePresence>
                 </>
               )}
             </div>
