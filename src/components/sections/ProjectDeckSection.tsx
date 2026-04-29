@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ProjectModal } from "@/components/ui/ProjectModal";
 import type { Project } from "@/types/project";
 
 // ── Project Card Data ───────────────────────────────────────────────────────────
@@ -139,559 +139,223 @@ const accentColors: Record<string, string> = {
 // ── Project Card Component ──────────────────────────────────────────────────────
 function ProjectCard({
   project,
-  index,
-  totalCards,
-  currentIndex,
-  isCenter,
-  isDimmed,
-  onFlip,
-  isFlipped,
+  onClick,
 }: {
   project: Project;
-  index: number;
-  totalCards: number;
-  currentIndex: number;
-  isCenter: boolean;
-  isDimmed: boolean;
-  onFlip: () => void;
-  isFlipped: boolean;
+  onClick: () => void;
 }) {
   const [isHovered, setIsHovered] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const offsetX = isCenter ? 0 : index < totalCards / 2
-    ? -(totalCards / 2 - index) * 60
-    : (index - Math.floor(totalCards / 2)) * 60;
-
-  const scale = isCenter ? 1 : 0.85;
-  const opacity = isDimmed ? 0.3 : isCenter ? 1 : 0.6;
-  const zIndex = isCenter ? 10 : totalCards - Math.abs(index - currentIndex);
 
   const accent = accentColors[project.category] || "#00ff88";
-  const gradient = cardGradients[project.category] || cardGradients.fullstack;
+  const gradient =
+    cardGradients[project.category] || cardGradients.fullstack;
 
   return (
     <motion.div
-      ref={cardRef}
-      className="absolute cursor-pointer"
-      style={{
-        perspective: 1000,
-        left: "50%",
-        top: "50%",
-        x: `calc(-50% + ${offsetX}px)`,
-        y: "-50%",
-        scale,
-        opacity,
-        zIndex,
-        width: 320,
-        height: 400,
-      }}
-      initial={false}
-      animate={{
-        scale: isHovered && isCenter ? 1.02 : scale,
-        x: `calc(-50% + ${offsetX}px)`,
-      }}
-      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="relative cursor-pointer rounded-2xl overflow-hidden"
+      style={{ aspectRatio: "3/4", background: gradient }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={(e) => {
-        e.stopPropagation();
-        if (isCenter) {
-          onFlip();
-        } else {
-          // Side cards will navigate when clicked — coming in a future update
-        }
-      }}
+      onClick={onClick}
+      whileHover={{ y: -4, scale: 1.02 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
+      {/* Scan line effect */}
       <div
-        className="relative w-[320px] h-[400px] rounded-2xl overflow-hidden"
+        className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
-          background: gradient,
-          boxShadow: isCenter
-            ? `0 0 60px -20px ${accent}40, 0 25px 50px -12px rgba(0,0,0,0.5)`
-            : "0 10px 40px -10px rgba(0,0,0,0.4)",
-          transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
-          transformStyle: "preserve-3d",
-          transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          backgroundImage: `repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(255,255,255,0.1) 2px,
+            rgba(255,255,255,0.1) 4px
+          )`,
         }}
-      >
-        {/* Front Face */}
-        <div
-          className="absolute inset-0 backface-hidden"
-          style={{ backfaceVisibility: "hidden" }}
+      />
+
+      {/* Corner accent */}
+      <div
+        className="absolute top-0 left-0 w-20 h-20"
+        style={{
+          background: `linear-gradient(135deg, ${accent} 0%, transparent 60%)`,
+          opacity: 0.15,
+        }}
+      />
+
+      {/* Badges */}
+      <div className="absolute top-4 left-4 right-4 flex justify-between">
+        <span
+          className="px-2.5 py-1 rounded-full text-[0.65rem] font-mono uppercase tracking-wider"
+          style={{
+            background: `${accent}20`,
+            color: accent,
+            border: `1px solid ${accent}40`,
+          }}
         >
-          {/* Scan line effect */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-[0.03]"
-            style={{
-              backgroundImage: `repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(255,255,255,0.1) 2px,
-                rgba(255,255,255,0.1) 4px
-              )`,
-            }}
-          />
+          {project.category}
+        </span>
+        <span
+          className="px-2 py-0.5 rounded text-xs font-mono"
+          style={{ background: "rgba(0,0,0,0.4)", color: "rgba(255,255,255,0.5)" }}
+        >
+          {project.year}
+        </span>
+      </div>
 
-          {/* Corner accent */}
-          <div
-            className="absolute top-0 left-0 w-16 h-16"
-            style={{
-              background: `linear-gradient(135deg, ${accent} 0%, transparent 60%)`,
-              opacity: 0.15,
-            }}
-          />
+      {/* Initials Watermark */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[100px] font-bold opacity-[0.04] select-none pointer-events-none"
+        style={{ color: "white", fontFamily: "var(--font-bebas)" }}
+      >
+        {project.slug.slice(0, 2).toUpperCase()}
+      </div>
 
-          {/* Category & Year */}
-          <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-            <span
-              className="px-3 py-1 rounded-full text-[0.65rem] font-mono uppercase tracking-wider"
-              style={{
-                background: `${accent}20`,
-                color: accent,
-                border: `1px solid ${accent}40`,
-              }}
-            >
-              {project.category}
-            </span>
-            <span
-              className="px-2 py-1 rounded text-xs font-mono"
-              style={{ background: "rgba(0,0,0,0.4)", color: "#888" }}
-            >
-              {project.year}
-            </span>
-          </div>
+      {/* Bottom content */}
+      <div className="absolute bottom-0 left-0 right-0 p-6">
+        <h3
+          className="text-3xl font-bold mb-1 tracking-tight"
+          style={{
+            fontFamily: "var(--font-bebas)",
+            color: "white",
+            textShadow: `0 0 30px ${accent}40`,
+          }}
+        >
+          {project.title}
+        </h3>
 
-          {/* Main Content */}
-          <div className="absolute inset-0 flex flex-col justify-end p-6">
-            {/* Initials Watermark */}
-            <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[120px] font-bold opacity-[0.03] select-none"
-              style={{ color: "white", fontFamily: "var(--font-bebas)" }}
-            >
-              {project.slug.slice(0, 2).toUpperCase()}
-            </div>
-
-            {/* Title */}
-            <h3
-              className="text-2xl font-bold mb-2 tracking-tight"
-              style={{
-                color: "white",
-                fontFamily: "var(--font-space-grotesk)",
-                textShadow: `0 0 30px ${accent}40`,
-              }}
-            >
-              {project.title}
-            </h3>
-
-            {/* Tagline */}
-            <p
-              className="text-sm leading-relaxed mb-4 line-clamp-2"
-              style={{ color: "rgba(255,255,255,0.7)" }}
+        <AnimatePresence>
+          {isHovered && (
+            <motion.p
+              className="text-sm mb-3 line-clamp-2"
+              style={{ color: "rgba(255,255,255,0.8)" }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
             >
               {project.tagline}
-            </p>
+            </motion.p>
+          )}
+        </AnimatePresence>
 
-            {/* Tech Stack */}
-            <div className="flex gap-2 flex-wrap mb-4">
-              {project.techStack.slice(0, 3).map((tech) => (
+        <AnimatePresence>
+          {isHovered && (
+            <motion.div
+              className="flex flex-wrap gap-1.5"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, delay: 0.05 }}
+            >
+              {project.techStack.slice(0, 4).map((tech) => (
                 <span
                   key={tech}
-                  className="px-2 py-0.5 rounded text-[0.6rem] font-mono"
+                  className="px-2 py-0.5 rounded text-[0.55rem] font-mono"
                   style={{
-                    background: "rgba(255,255,255,0.1)",
-                    color: "rgba(255,255,255,0.8)",
+                    background: "rgba(255,255,255,0.15)",
+                    color: "rgba(255,255,255,0.9)",
                     border: "1px solid rgba(255,255,255,0.1)",
                   }}
                 >
                   {tech}
                 </span>
               ))}
-            </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-            {/* Hover indicator */}
-            <div
-              className="flex items-center gap-2 text-xs font-mono"
+        {/* Hover indicator */}
+        <AnimatePresence>
+          {isHovered && (
+            <motion.div
+              className="flex items-center gap-2 text-xs font-mono mt-3"
               style={{ color: accent }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, delay: 0.1 }}
             >
-              <span className="opacity-60">Click to explore</span>
+              <span>Explore project</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path
+                  d="M3 8h10M9 4l4 4-4 4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
-            </div>
-          </div>
-
-          {/* Glow line at bottom */}
-          <div
-            className="absolute bottom-0 left-0 right-0 h-[2px]"
-            style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
-          />
-        </div>
-
-        {/* Back Face — Full Project Details */}
-        <div
-          className="absolute inset-0 rounded-2xl p-5 overflow-y-auto"
-          style={{
-            background: `linear-gradient(160deg, var(--color-bg-elevated) 0%, ${accent}08 100%)`,
-            backfaceVisibility: "hidden",
-            transform: "rotateY(180deg)",
-            border: `1px solid ${accent}30`,
-          }}
-        >
-          {/* Header row: Category + Year + Status */}
-          <div className="flex items-start justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <span
-                className="px-2 py-0.5 rounded-full text-[0.6rem] font-mono uppercase tracking-wider"
-                style={{
-                  background: `${accent}20`,
-                  color: accent,
-                  border: `1px solid ${accent}40`,
-                }}
-              >
-                {project.category}
-              </span>
-              <span
-                className="px-2 py-0.5 rounded text-[0.6rem] font-mono"
-                style={{ background: "rgba(0,0,0,0.3)", color: "rgba(255,255,255,0.5)" }}
-              >
-                {project.year}
-              </span>
-            </div>
-            {/* Status pill */}
-            <span
-              className="px-2 py-0.5 rounded-full text-[0.55rem] font-mono"
-              style={{
-                background: project.status === "active" ? "rgba(74,197,94,0.15)" : project.status === "archived" ? "rgba(156,163,175,0.15)" : "rgba(234,179,8,0.15)",
-                color: project.status === "active" ? "#4ade80" : project.status === "archived" ? "#9ca3af" : "#eab308",
-              }}
-            >
-              {project.status}
-            </span>
-          </div>
-
-          {/* Title + Tagline */}
-          <h3
-            className="text-base font-bold mb-1"
-            style={{
-              color: "var(--color-text)",
-              fontFamily: "var(--font-bebas)",
-              letterSpacing: "0.05em",
-              textShadow: `0 0 20px ${accent}30`,
-            }}
-          >
-            {project.title}
-          </h3>
-          <p className="text-[0.7rem] leading-relaxed mb-3" style={{ color: "var(--color-text-secondary)" }}>
-            {project.tagline}
-          </p>
-
-          {/* Overview section */}
-          <div className="mb-2">
-            <span className="text-[0.55rem] font-mono uppercase tracking-widest" style={{ color: accent }}>
-              Overview
-            </span>
-            <p className="text-[0.72rem] leading-relaxed mt-0.5 line-clamp-2" style={{ color: "var(--color-text-secondary)" }}>
-              {project.summary}
-            </p>
-          </div>
-
-          {/* My Role section */}
-          <div className="mb-2">
-            <span className="text-[0.55rem] font-mono uppercase tracking-widest" style={{ color: accent }}>
-              My Role
-            </span>
-            <p className="text-[0.72rem] leading-relaxed mt-0.5" style={{ color: "var(--color-text-secondary)" }}>
-              {project.myRole}
-            </p>
-          </div>
-
-          {/* Impact section */}
-          <div className="mb-3">
-            <span className="text-[0.55rem] font-mono uppercase tracking-widest" style={{ color: accent }}>
-              Impact
-            </span>
-            <p className="text-[0.72rem] leading-relaxed mt-0.5" style={{ color: "var(--color-text)" }}>
-              {project.impact}
-            </p>
-          </div>
-
-          {/* Tech Stack — ALL pills */}
-          <div className="flex flex-wrap gap-1 mb-3">
-            {project.techStack.map((tech) => (
-              <span
-                key={tech}
-                className="px-1.5 py-0.5 rounded text-[0.55rem] font-mono"
-                style={{
-                  background: `${accent}15`,
-                  color: accent,
-                  border: `1px solid ${accent}30`,
-                }}
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-
-          {/* View Full link */}
-          <Link
-            href={`/projects/${project.slug}`}
-            className="flex items-center justify-center gap-1 w-full py-2 rounded-lg text-xs font-medium transition-all"
-            style={{
-              background: accent,
-              color: "var(--color-text-inverse)",
-            }}
-          >
-            View Full →
-          </Link>
-
-          {/* Back hint */}
-          <div className="text-center mt-2 text-[0.55rem]" style={{ color: "var(--color-text-tertiary)" }}>
-            ← Click card to flip back
-          </div>
-        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
+      {/* Glow line at bottom */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[2px]"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
+        }}
+      />
     </motion.div>
   );
 }
 
 // ── Main Component ──────────────────────────────────────────────────────────────
 export function ProjectDeckSection() {
-  const [currentIndex, setCurrentIndex] = useState(Math.floor(projects.length / 2));
-  const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
-
-  const exploredCount = flippedCards.size;
-  const totalCards = projects.length;
-
-  const handleFlip = useCallback((slug: string) => {
-    setFlippedCards((prev) => {
-      const next = new Set(prev);
-      if (next.has(slug)) {
-        next.delete(slug);
-      } else {
-        next.add(slug);
-      }
-      return next;
-    });
-  }, []);
-
-  const navigateCard = useCallback((direction: "left" | "right") => {
-    setFlippedCards(new Set()); // Reset flips when navigating
-    setCurrentIndex((prev) => {
-      if (direction === "left" && prev > 0) return prev - 1;
-      if (direction === "right" && prev < projects.length - 1) return prev + 1;
-      return prev;
-    });
-  }, []);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <section id="projects" className="relative py-[clamp(5rem,10vw,8rem)] overflow-hidden" style={{ background: "var(--color-bg)" }}>
+    <section
+      id="projects"
+      className="relative py-[clamp(5rem,10vw,8rem)] overflow-hidden"
+      style={{ background: "var(--color-bg)" }}
+    >
       {/* Background gradient */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 80% 50% at 50% 100%, rgba(232,51,10,0.08) 0%, transparent 60%)",
+          background:
+            "radial-gradient(ellipse 80% 50% at 50% 100%, rgba(232,51,10,0.08) 0%, transparent 60%)",
         }}
       />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <div>
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-sm font-mono uppercase tracking-widest mb-3 block"
-              style={{ color: "var(--color-primary)" }}
-            >
-              Things I&apos;ve built
-            </motion.span>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="text-4xl md:text-5xl font-bold"
-              style={{
-                fontFamily: "var(--font-playfair)",
-                color: "var(--color-text)",
-              }}
-            >
-              Projects.
-            </motion.h2>
-          </div>
-
-          {/* Stats & Navigation */}
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-4">
-              <div
-                className="px-4 py-2 rounded-full"
-                style={{
-                  background: "var(--color-bg-elevated)",
-                  border: "1px solid var(--color-border)",
-                }}
-              >
-                <span className="font-mono text-sm">
-                  <span style={{ color: "var(--color-primary)", fontWeight: "bold" }}>{exploredCount}</span>
-                  <span style={{ color: "var(--color-text-tertiary)" }}> / {totalCards}</span>
-                  <span className="ml-2" style={{ color: "var(--color-text-secondary)" }}>explored</span>
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigateCard("left")
-                }}
-                disabled={currentIndex === 0}
-                className="p-3 rounded-xl disabled:opacity-30 transition-all hover:scale-105 active:scale-95"
-                style={{
-                  background: "var(--color-bg-elevated)",
-                  border: "1px solid var(--color-border)",
-                }}
-                aria-label="Previous project"
-              >
-                <ChevronLeft size={20} style={{ color: "var(--color-text)" }} />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigateCard("right")
-                }}
-                disabled={currentIndex === projects.length - 1}
-                className="p-3 rounded-xl disabled:opacity-30 transition-all hover:scale-105 active:scale-95"
-                style={{
-                  background: "var(--color-bg-elevated)",
-                  border: "1px solid var(--color-border)",
-                }}
-                aria-label="Next project"
-              >
-                <ChevronRight size={20} style={{ color: "var(--color-text)" }} />
-              </button>
-            </div>
-          </div>
+        <div className="mb-16">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-sm font-mono uppercase tracking-widest mb-3 block"
+            style={{ color: "var(--color-primary)" }}
+          >
+            Things I&apos;ve built
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl md:text-5xl font-bold"
+            style={{
+              fontFamily: "var(--font-playfair)",
+              color: "var(--color-text)",
+            }}
+          >
+            Projects.
+          </motion.h2>
         </div>
 
-        {/* Card Deck */}
-        <div
-          className="relative flex items-center justify-center py-12"
-          style={{ minHeight: "480px" }}
-          onClick={() => setFlippedCards(new Set())}
-        >
-          {projects.map((project, index) => {
-            const isCenter = index === currentIndex;
-            const isDimmed = Math.abs(index - currentIndex) > 2;
-
-            return (
-              <ProjectCard
-                key={project.slug}
-                project={project}
-                index={index}
-                totalCards={projects.length}
-                currentIndex={currentIndex}
-                isCenter={isCenter}
-                isDimmed={isDimmed}
-                onFlip={() => handleFlip(project.slug)}
-                isFlipped={flippedCards.has(project.slug)}
-              />
-            );
-          })}
-        </div>
-
-        {/* Progress dots */}
-        <div className="flex justify-center gap-2 mt-8">
-          {projects.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                setFlippedCards(new Set());
-                setCurrentIndex(index);
-              }}
-              className="w-2 h-2 rounded-full transition-all"
-              style={{
-                background: index === currentIndex
-                  ? "var(--color-primary)"
-                  : "var(--color-border)",
-                transform: index === currentIndex ? "scale(1.3)" : "scale(1)",
-              }}
-              aria-label={`Go to project ${index + 1}`}
-            />
-          ))}
-        </div>
-
-        {/* All explored celebration */}
-        <AnimatePresence>
-          {exploredCount === totalCards && (
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex justify-center mt-12"
-            >
-              <div
-                className="inline-flex items-center gap-3 px-6 py-3 rounded-full"
-                style={{
-                  background: "linear-gradient(135deg, var(--color-primary), #ff6b35)",
-                  color: "white",
-                }}
-              >
-                <span className="text-xl">🎉</span>
-                <span className="font-medium">You&apos;ve explored all my work!</span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Mobile: horizontal scroll */}
-        <div className="md:hidden mt-12 overflow-x-auto snap-x snap-mandatory flex gap-4 pb-4 -mx-6 px-6">
+        {/* Project Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {projects.map((project) => (
-            <div
+            <ProjectCard
               key={project.slug}
-              className="flex-shrink-0 w-[280px] snap-center rounded-xl p-5"
-              style={{
-                background: "var(--color-bg-elevated)",
-                border: "1px solid var(--color-border)",
-              }}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <span
-                  className="px-2 py-0.5 rounded text-[0.6rem] font-mono uppercase"
-                  style={{
-                    background: `${accentColors[project.category] || "#00ff88"}20`,
-                    color: accentColors[project.category] || "#00ff88",
-                  }}
-                >
-                  {project.category}
-                </span>
-                <span className="text-xs font-mono" style={{ color: "var(--color-text-tertiary)" }}>
-                  {project.year}
-                </span>
-              </div>
-              <h3 className="text-lg font-bold mb-2" style={{ color: "var(--color-text)" }}>
-                {project.title}
-              </h3>
-              <p className="text-sm line-clamp-2 mb-3" style={{ color: "var(--color-text-secondary)" }}>
-                {project.tagline}
-              </p>
-              <div className="flex gap-2 flex-wrap">
-                {project.techStack.slice(0, 3).map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-2 py-0.5 rounded text-[0.6rem] font-mono"
-                    style={{
-                      background: "var(--color-bg)",
-                      color: "var(--color-text-tertiary)",
-                    }}
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
+              project={project}
+              onClick={() => setSelectedProject(project)}
+            />
           ))}
         </div>
 
@@ -709,11 +373,23 @@ export function ProjectDeckSection() {
           >
             View all projects
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path
+                d="M3 8h10M9 4l4 4-4 4"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </Link>
         </motion.div>
       </div>
+
+      {/* Project Modal */}
+      <ProjectModal
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
     </section>
   );
 }
