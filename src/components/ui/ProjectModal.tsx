@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, GitBranch, ExternalLink, FileText } from "lucide-react";
 import type { Project } from "@/types/project";
 
@@ -20,6 +20,11 @@ interface ProjectModalProps {
 
 export function ProjectModal({ project, onClose }: ProjectModalProps) {
   const accent = project ? (accentColors[project.category] || "#00ff88") : "#00ff88";
+  const prefersReduced = useReducedMotion();
+
+  // Track latest onClose to avoid re-adding the listener
+  const onCloseRef = useRef(onClose);
+  useEffect(() => { onCloseRef.current = onClose; });
 
   useEffect(() => {
     if (project) {
@@ -34,11 +39,11 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") onCloseRef.current();
     };
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [onClose]);
+  }, []);
 
   return (
     <AnimatePresence>
@@ -66,11 +71,11 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 30,
-            }}
+            transition={
+              prefersReduced
+                ? { duration: 0.3 }
+                : { type: "spring", stiffness: 300, damping: 30 }
+            }
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close bar */}
