@@ -7,6 +7,7 @@ import {
   Bebas_Neue,
 } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { ScrollProgress } from "@/components/shared/ScrollProgress";
@@ -116,16 +117,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`min-h-screen flex flex-col antialiased cursor-none ${bebasNeue.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable}`}>
-        <ThemeProvider>
-          <ToastProvider>
-          <SmartCursor />
-          <ScrollProgress />
-          <PuzzlePortal />
-          <ScrollParticlesWrapper />
-          <JsonLd />
-          {children}
-          </ToastProvider>
-        </ThemeProvider>
+        <ClerkProvider>
+          <ThemeProvider>
+            <ToastProvider>
+              <SmartCursor />
+              <ScrollProgress />
+              <PuzzlePortal />
+              <ScrollParticlesWrapper />
+              <JsonLd />
+              {children}
+            </ToastProvider>
+          </ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
