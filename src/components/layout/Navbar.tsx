@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sun, Moon } from "lucide-react";
+import { UserButton, SignInButton, useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/components/shared/ThemeProvider";
 
@@ -20,6 +21,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,32 +75,45 @@ export function Navbar() {
 
             {/* Right side */}
             <div className="flex items-center gap-4">
-              {/* Theme toggle */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-full text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)] transition-all duration-300"
-                aria-label="Toggle theme"
-              >
-                <motion.div
-                  initial={false}
-                  animate={{ rotate: resolvedTheme === "dark" ? 180 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {resolvedTheme === "dark" ? (
-                    <Sun size={20} />
-                  ) : (
-                    <Moon size={20} />
-                  )}
-                </motion.div>
-              </button>
+              {/* Auth / Theme controls */}
+              <div className="flex items-center gap-4">
+                {isSignedIn ? (
+                  <Link
+                    href="/admin"
+                    className="hidden md:inline-flex items-center gap-1 font-dm-sans font-medium text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-glow)] transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                ) : (
+                  <SignInButton mode="modal">
+                    <button className="hidden md:inline-flex items-center gap-1 font-dm-sans font-medium text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-glow)] transition-colors cursor-pointer">
+                      Sign In
+                    </button>
+                  </SignInButton>
+                )}
 
-              {/* CTA — text link, not button */}
-              <Link
-                href="/#contact"
-                className="hidden md:inline-flex items-center gap-1 font-dm-sans font-medium text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] transition-colors"
-              >
-                Let&apos;s talk →
-              </Link>
+                <UserButton />
+
+                {/* Theme toggle */}
+                <button
+                  onClick={toggleTheme}
+                  suppressHydrationWarning
+                  className="p-2 rounded-full text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)] transition-all duration-300"
+                  aria-label="Toggle theme"
+                >
+                  <motion.div
+                    initial={false}
+                    animate={{ rotate: resolvedTheme === "dark" ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {resolvedTheme === "dark" ? (
+                      <Sun size={20} />
+                    ) : (
+                      <Moon size={20} />
+                    )}
+                  </motion.div>
+                </button>
+              </div>
 
               {/* Mobile menu toggle */}
               <button
